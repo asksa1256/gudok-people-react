@@ -1,12 +1,16 @@
 # 구독의 민족 | Web App by React.js + Node.js 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+mongoDB: 추가 연동 예정
+
+## 개발 툴
+
+Visual Studio Code (VS Code)
 
 ## 개발 환경 설정
 
 ### `npm i`
 
-프로젝트를 클론 받고, VS Code 터미널에 npm i 입력해서 개발 시작 환경 세팅
+프로젝트를 클론 받고, vs code 터미널에 npm i 입력해서 개발 시작 환경 세팅
 
 ## 서버 실행
 
