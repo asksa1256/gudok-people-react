@@ -1,13 +1,310 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@charset "utf-8";
+
+/* fonts */
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 400;
+  src: url(../public/font/Pretendard-Regular.woff) format("woff");
+}
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 500;
+  src: url(../public/font/Pretendard-Medium.woff) format("woff");
+}
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 700;
+  src: url(../public/font/Pretendard-Bold.woff) format("woff");
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* reset */
+* {
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  box-sizing: border-box;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  word-break: keep-all;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  font-family: "Pretendard", sans-serif;
+  font-weight: 400;
+  background: #fafafa;
+  color: #191919;
+  line-height: 1.2;
+}
+
+article,
+aside,
+canvas,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section,
+summary {
+  display: block;
+}
+b,
+strong {
+  font-weight: 600;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+form,
+span {
+  margin: 0;
+  padding: 0;
+  font-family: "Pretendard", sans-serif;
+}
+h4 {
+  font-size: 20px;
+}
+div,
+table {
+  margin: 0;
+  padding: 0;
+  border-spacing: 0;
+  border-collapse: collapse;
+  border: 0px none;
+}
+ul,
+ol,
+li,
+td,
+dl,
+dt,
+dd {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+em,
+i {
+  font-style: normal;
+}
+a,
+span {
+  display: inline-block;
+}
+img {
+  border: 0;
+  vertical-align: top;
+}
+address,
+caption,
+pre,
+em,
+i {
+  font-style: normal;
+}
+figure {
+  margin: 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+table caption,
+legend {
+  height: 0;
+  width: 0;
+  overflow: hidden;
+  font-size: 0;
+}
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td {
+  background: transparent;
+  font-size: 100%;
+}
+th,
+td {
+  vertical-align: middle;
+}
+
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+hr {
+  width: 100%;
+  height: 1px;
+  background-color: #ddd;
+  margin: 20px 0px;
+  border: 0px;
+}
+
+/* 링크속성 */
+a {
+  color: #333;
+  text-decoration: none;
+  cursor: none;
+}
+a:hover,
+a:focus {
+  color: #34586e;
+}
+a:focus {
+  color: #34586e;
+}
+a:link,
+a:visited {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* form */
+input,
+select,
+textarea,
+button {
+  color: #666;
+  background-color: transparent;
+  vertical-align: middle;
+  padding: 10px;
+  border: 0;
+  box-sizing: border-box;
+}
+input::-ms-clear {
+  display: none;
+}
+input {
+  -webkit-appearance: none;
+  -webkit-border-radius: 0;
+} /*아이폰 버튼스타일 제거*/
+input[type="checkbox"] {
+  -webkit-appearance: checkbox;
+}
+input[type="radio"] {
+  vertical-align: top;
+  padding: 0;
+}
+input[type="file"] {
+  height: auto;
+}
+textarea {
+  resize: none;
+}
+select {
+  border-radius: 0px;
+}
+select {
+  padding: 10px 24px 10px 14px;
+  -webkit-padding-end: 30px;
+  -moz-padding-end: 30px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+select::-ms-expand {
+  display: none;
+}
+textarea {
+  resize: none;
+}
+button,
+label,
+input[type="submit"],
+input[type="button"] {
+  cursor: pointer;
+}
+fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+input:read-only {
+  background: #fafafa;
+  color: #111;
+}
+
+/* 마우스 드래그 컬러 */
+::selection {
+  background: #191c1f;
+  color: #fff;
+  text-shadow: none;
+}
+::-moz-selection {
+  background: #191c1f;
+  color: #fff;
+  text-shadow: none;
+}
+::-webkit-selection {
+  background: #191c1f;
+  color: #fff;
+  text-shadow: none;
+}
+
+/* 인풋 플레이스 홀더 */
+input::placeholder,
+::-webkit-input-placeholder,
+::-moz-placeholder,
+:-ms-input-placeholder,
+:-moz-placeholder {
+  color: #999;
+  font-size: 0.875em;
+}
+
+/* Accessibility */
+.sound_only,
+.blind {
+  height: 0;
+  width: 0;
+  font-size: 0;
+  overflow: hidden;
+}
+.hide {
+  display: none;
+}
+
+/* 글자자름 (inline-block, block 형태로 가로폭 지정)*/
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ellipsis2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: nowrap;
+  line-height: 1.2em;
+  height: 2.4em;
 }
