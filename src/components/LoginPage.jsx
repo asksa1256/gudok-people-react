@@ -13,6 +13,7 @@ function LoginPage() {
         </figure>
         <h4>로그인</h4>
         <input type="text" className="form-control" />
+        <button id="loginBtn">로그인</button>
       </form>
     </div>
   );
