@@ -1,33 +1,39 @@
 import React from "react";
-import "./App.css";
-import LoginPage from "./components/LoginPage";
-
 import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
 import { getMessaging, getToken, isSupported } from "firebase/messaging";
+import { Route, Routes } from "react-router-dom";
+import "./App.scss";
+import "./index.scss";
+import LoginPage from "./components/LoginPage";
+import SignupPage from "./components/SignupPage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBWp9u4dLqN9Oio8YfeC-B_zHtETHAeZa0",
-  authDomain: "web-push-test-c56fc.firebaseapp.com",
-  projectId: "web-push-test-c56fc",
-  storageBucket: "web-push-test-c56fc.appspot.com",
-  messagingSenderId: "653933743334",
-  appId: "1:653933743334:web:7b4a107f0a1ea9ffe5bf27",
+  apiKey: "AIzaSyDJIKpp9yOyKk46wKRmFzVhXn3LD6TpipY",
+  authDomain: "gudok-87985.firebaseapp.com",
+  databaseURL:
+    "https://gudok-87985-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "gudok-87985",
+  storageBucket: "gudok-87985.appspot.com",
+  messagingSenderId: "359891219478",
+  appId: "1:359891219478:web:25b97dd447f5379f9b3137",
+  measurementId: "G-BE9K8XNCTR",
 };
 
 const app = initializeApp(firebaseConfig);
-// Get registration token. Initially this makes a network call, once retrieved
-// subsequent calls to getToken will return from cache.
+const analytics = getAnalytics(app);
 const messaging = getMessaging();
 
 if (isSupported()) {
   // FCM(파이어베이스 클라우드 메시징)이 지원되지 않는 브라우저에서는 화면이 하얗게 뜨는 현상 방지
   getToken(messaging, {
+    // 파이어베이스 웹 푸시 인증서 공개키
     vapidKey:
-      "BBaLpyvKI38l9yuKgDVHrcvpLn6KOcAIgfY2lhSumDZ7CrWBODy7eeU2obSk49IB5K0i26dVhqbLvM1Mp9FpAC8",
+      "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
   })
     .then((currentToken) => {
       if (currentToken) {
-        console.log(currentToken);
+        // console.log(currentToken);
       } else {
         // Show permission request UI
         console.log(
@@ -45,9 +51,12 @@ if (isSupported()) {
 function App() {
   return (
     <div className="App">
-      <div className="content">
-        <LoginPage />
-      </div>
+      {/* <div className="content"> */}
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+      </Routes>
+      {/* </div> */}
     </div>
   );
 }
