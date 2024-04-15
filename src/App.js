@@ -7,6 +7,7 @@ import "./App.scss";
 import "./index.scss";
 import LoginPage from "./components/LoginPage";
 import SignupPage from "./components/SignupPage";
+import MainPage from "./components/MainPage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDJIKpp9yOyKk46wKRmFzVhXn3LD6TpipY",
@@ -55,6 +56,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/main" element={<MainPage />} />
       </Routes>
       {/* </div> */}
     </div>

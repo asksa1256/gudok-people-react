@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./SignupPage.scss";
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateEmail,
+} from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDJIKpp9yOyKk46wKRmFzVhXn3LD6TpipY",
@@ -33,8 +37,6 @@ export default function SignupPage() {
   // 회원가입 정보 firebase DB로 전송
   async function submitSignupHandler(event) {
     event.preventDefault();
-    const signUpEmail = document.getElementById("email").value.trim();
-    const signUpPassword = document.getElementById("password").value.trim();
 
     nickname.length === 0 ? setNicknameValid(false) : setNicknameValid(true);
     password.length < 6 ? setPasswordValid(false) : setPasswordValid(true);
@@ -63,9 +65,9 @@ export default function SignupPage() {
 
       switch (error.code) {
         case "auth/email-already-in-use":
-          setEmailUnique(false);
-        // case "auth/weak-password":
-        //   setPasswordValid(false);
+        // setEmailUnique(false);
+        case "auth/weak-password":
+        // setPasswordValid(false);
         case "auth/network-request-failed":
           return "네트워크 연결에 실패 하였습니다.";
         case "auth/invalid-email":
@@ -78,32 +80,16 @@ export default function SignupPage() {
     }
   }
 
-  // const checkDuplicate = async () => {
-  //   if (email.trim().length === 0) {
-  //     alert("이메일을 입력해주세요.");
-  //   } else {
-  //     // getAuth()
-  //     //   .getUserByEmail(email)
-  //     //   .then((userRecord) => {
-  //     //     // See the UserRecord reference doc for the contents of userRecord.
-  //     //     console.log(`Successfully fetched user data: ${userRecord.toJSON()}`);
-  //     //   })
-  //     //   .catch((error) => {
-  //     //     console.log("Error fetching user data:", error);
-  //     //   });
-  //     try {
-  //       const userCredential = await fetchSignInMethodsForEmail(auth, email);
-  //       console.log(userCredential);
-  //       if (userCredential.length !== 0) {
-  //         console.log("해당 이메일로 이미 가입된 사용자가 있습니다.");
-  //       } else {
-  //         console.log("해당 이메일로 가입된 사용자가 없습니다.");
-  //       }
-  //     } catch (error) {
-  //       console.error("이메일 확인 오류:", error);
-  //     }
+  // function checkDuplicate() {
+  //   const user = auth.currentUser; // 로그인을 한번이라도 해야 currentUser에 등록이 됨. 가입만 하고 로그인을 안하면 가입했어도 null로 뜸. => 회원가입 후 자동으로 로그인 시키면 사용 가능 -> 중복확인 로직 구현 가능할수도
+
+  //   console.log(user);
+  //   if (user !== null) {
+  //     user.providerData.forEach((profile) => {
+  //       console.log("  Email: " + profile.email);
+  //     });
   //   }
-  // };
+  // }
 
   return (
     <div className="align-center">
@@ -128,20 +114,16 @@ export default function SignupPage() {
                 placeholder="이메일"
                 required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value.trim())}
                 className={!emailUnique || !emailValid ? "invalid" : ""}
               />
-              {emailUnique ? undefined : (
+              {!emailUnique && (
                 <span className="text-invalid">이미 등록된 이메일입니다.</span>
               )}
-              {emailValid ? undefined : (
+              {!emailValid && (
                 <span className="text-invalid">잘못된 이메일 형식입니다.</span>
               )}
-
-              {/* <button
-                className="btn-sm btn-gray"
-                onClick={checkDuplicate}
-              >
+              {/* <button className="btn-sm btn-gray" onClick={checkDuplicate}>
                 중복확인
               </button> */}
             </div>
@@ -153,10 +135,10 @@ export default function SignupPage() {
                 placeholder="비밀번호"
                 required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value.trim())}
                 className={!passwordValid ? "invalid" : ""}
               />
-              {passwordValid ? undefined : (
+              {!passwordValid && (
                 <span className="text-invalid">
                   비밀번호는 최소 6자 이상 입력해주세요.
                 </span>
@@ -169,10 +151,10 @@ export default function SignupPage() {
                 id="confirm-password"
                 placeholder="비밀번호 확인"
                 value={passChk}
-                onChange={(e) => setPassChk(e.target.value)}
+                onChange={(e) => setPassChk(e.target.value.trim())}
                 className={!passChkValid ? "invalid" : ""}
               />
-              {passChkValid ? undefined : (
+              {!passChkValid && (
                 <span className="text-invalid">
                   입력한 비밀번호가 다릅니다.
                 </span>
@@ -186,10 +168,10 @@ export default function SignupPage() {
                 placeholder="닉네임"
                 required
                 value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
+                onChange={(e) => setNickname(e.target.value.trim())}
                 className={!nicknameValid ? "invalid" : ""}
               />
-              {nicknameValid ? undefined : (
+              {!nicknameValid && (
                 <span className="text-invalid">닉네임을 입력해주세요.</span>
               )}
               {/* <button
@@ -199,12 +181,10 @@ export default function SignupPage() {
                 중복확인
               </button> */}
             </div>
-            {/* <!-- 회원가입 버튼에 id 추가 --> */}
             <div className="actions">
               <button id="signUpButton" onClick={submitSignupHandler}>
                 회원가입
               </button>
-              {/* <!-- Added id "signUpButton" --> */}
             </div>
           </div>
         </div>
