@@ -8,6 +8,10 @@ import "./index.scss";
 import LoginPage from "./components/LoginPage";
 import SignupPage from "./components/SignupPage";
 import MainPage from "./components/MainPage";
+import CommunityPage from "./components/CommunityPage";
+import RankingPage from "./components/RankingPage";
+import SettingsPage from "./components/SettingsPage";
+import MySubscriptionPage from "./components/MySubscriptionPage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDJIKpp9yOyKk46wKRmFzVhXn3LD6TpipY",
@@ -52,13 +56,15 @@ if (isSupported()) {
 function App() {
   return (
     <div className="App">
-      {/* <div className="content"> */}
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/main" element={<MainPage />} />
+        <Route path="/mySubscription" element={<MySubscriptionPage />} />
+        <Route path="/ranking" element={<RankingPage />} />
+        <Route path="/community" element={<CommunityPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
       </Routes>
-      {/* </div> */}
     </div>
   );
 }

@@ -138,11 +138,14 @@ export default function SignupPage() {
                 onChange={(e) => setPassword(e.target.value.trim())}
                 className={!passwordValid ? "invalid" : ""}
               />
-              {!passwordValid && (
+              <span className={passwordValid ? "text-sub" : "text-invalid"}>
+                최소 6자 이상 입력해주세요.
+              </span>
+              {/* {!passwordValid && (
                 <span className="text-invalid">
                   비밀번호는 최소 6자 이상 입력해주세요.
                 </span>
-              )}
+              )} */}
             </div>
             <div className="form-control">
               <label htmlFor="confirm-password">비밀번호 확인</label>
@@ -160,7 +163,7 @@ export default function SignupPage() {
                 </span>
               )}
             </div>
-            <div className="form-control">
+            {/* <div className="form-control">
               <label htmlFor="nickname">닉네임</label>
               <input
                 type="text"
@@ -174,13 +177,7 @@ export default function SignupPage() {
               {!nicknameValid && (
                 <span className="text-invalid">닉네임을 입력해주세요.</span>
               )}
-              {/* <button
-                className="btn-sm btn-gray"
-                onClick={checkDuplicate("nickname")}
-              >
-                중복확인
-              </button> */}
-            </div>
+            </div> */}
             <div className="actions">
               <button id="signUpButton" onClick={submitSignupHandler}>
                 회원가입

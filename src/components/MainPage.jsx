@@ -1,6 +1,7 @@
 import React from "react";
 import "./MainPage.scss";
 import MySubscrList from "./MySubscrList";
+import { Link } from "react-router-dom";
 
 export default function MainPage() {
   const items = [
@@ -148,44 +149,44 @@ export default function MainPage() {
         </div>
         <nav className="dock-bar">
           <div className="dock-item active">
-            <a href="/main" className="dock-link">
+            <Link to="/main" className="dock-link">
               <figure className="icon">
                 <img src="/images/home-fill.svg" alt="" />
               </figure>
               <span className="text">홈</span>
-            </a>
+            </Link>
           </div>
           <div className="dock-item">
-            <a href="/mySubscription" className="dock-link">
+            <Link to="/mySubscription" className="dock-link">
               <figure className="icon">
                 <img src="/images/stack-line.svg" alt="" />
               </figure>
               <span className="text">내 구독</span>
-            </a>
+            </Link>
           </div>
           <div className="dock-item">
-            <a href="/charts" className="dock-link">
+            <Link to="/ranking" className="dock-link">
               <figure className="icon">
                 <img src="/images/list-ordered.svg" alt="" />
               </figure>
               <span className="text">플랫폼 순위</span>
-            </a>
+            </Link>
           </div>
           <div className="dock-item">
-            <a href="/charts" className="dock-link">
+            <Link to="/community" className="dock-link">
               <figure className="icon">
                 <img src="/images/group-line.svg" alt="" />
               </figure>
               <span className="text">커뮤니티</span>
-            </a>
+            </Link>
           </div>
           <div className="dock-item">
-            <a href="/charts" className="dock-link">
+            <Link to="/settings" className="dock-link">
               <figure className="icon">
                 <img src="/images/settings-line.svg" alt="" />
               </figure>
               <span className="text">설정</span>
-            </a>
+            </Link>
           </div>
         </nav>
       </section>
