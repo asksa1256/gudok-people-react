@@ -38,7 +38,7 @@ if (isSupported()) {
   })
     .then((currentToken) => {
       if (currentToken) {
-        // console.log(currentToken);
+        console.log(currentToken);
       } else {
         // Show permission request UI
         console.log(
