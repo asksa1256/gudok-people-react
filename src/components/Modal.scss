@@ -1,0 +1,97 @@
+.modal {
+  background: #fff;
+  position: absolute;
+  left: 0;
+  top: 102%;
+  width: 100%;
+  padding: 24px 20px;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  z-index: 99;
+
+  &.open {
+    animation: slideUp 0.2s ease-out both;
+  }
+
+  &.close {
+    animation: slideDown 0.2s ease-out both;
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
+    h3 {
+      font-size: 24px;
+    }
+  }
+
+  .form-control input {
+    font-size: 14px;
+
+    &[type="number"] {
+      padding-right: 0;
+      text-align: center;
+    }
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-102%);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-102%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.backdrop {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.15);
+  z-index: 98;
+
+  &.open {
+    animation: fadeIn 0.2s ease-out both;
+  }
+
+  &.close {
+    animation: fadeOut 0.2s ease-out both;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    visibility: hidden;
+  }
+  to {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    visibility: visible;
+  }
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}

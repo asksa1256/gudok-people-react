@@ -1,24 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import "./MainPage.scss";
 import MySubscrList from "./MySubscrList";
 import { Link } from "react-router-dom";
+import AddSubscrModal from "./AddSubscrModal";
+
+const items = [
+  {
+    id: Math.random(),
+    title: "넷플릭스",
+    price: 5500,
+    paymentDate: "04.26",
+    imgSrc: "/images/netflix-logo.png",
+    imgAlt: "넷플릭스 아이콘",
+    sharing: false,
+  },
+];
 
 export default function MainPage() {
-  const items = [
-    {
-      id: Math.random(),
-      title: "넷플릭스",
-      price: 5500,
-      paymentDate: "04.26",
-      imgSrc: "/images/netflix-logo.png",
-      imgAlt: "넷플릭스 아이콘",
-      sharing: false,
-    },
-  ];
+  const [showModal, setShowModal] = useState(false);
+
+  const showAddSubscrModal = () => {
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
   return (
     <div className="align-center">
       <section className="MainPage">
+        <AddSubscrModal
+          open={showModal}
+          close={closeModal}
+          title={"새 구독 추가"}
+        />
         <div className="contents">
           <div className="nav-top"></div>
           <figure className="logo">
@@ -39,7 +55,7 @@ export default function MainPage() {
               <button
                 type="button"
                 className="text-btn text-btn-primary"
-                id="showAddListModalBtn"
+                onClick={showAddSubscrModal}
               >
                 + 추가하기
               </button>

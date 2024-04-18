@@ -10,6 +10,7 @@ section {
   /* 모바일 크기로 설정 */
   width: 392px;
   height: 852px;
+  overflow: hidden;
 }
 
 .align-center {
@@ -101,6 +102,7 @@ section {
   input {
     padding-right: 90px;
     font-size: 16px;
+
     &:focus {
       border-color: #ae6cdc;
       &::placeholder {
@@ -109,6 +111,17 @@ section {
     }
     &.invalid {
       border-color: red;
+    }
+    &[type="date"] {
+      padding-right: 14px;
+    }
+    &[type="number"] {
+      padding-right: 14px;
+    }
+    &.active {
+      background: #ae6cdc;
+      color: #fff;
+      border-color: #ae6cdc;
     }
   }
 
@@ -133,6 +146,27 @@ section {
     color: #888;
     font-size: 16px;
   }
+
+  .options {
+    display: flex;
+
+    * + * {
+      margin-left: 8px;
+    }
+
+    .btn-w50 {
+      width: 48%;
+      flex-shrink: 0;
+      border: 1px solid #c4c4c4;
+      border-radius: 4px;
+
+      &.active {
+        background: #ae6cdc;
+        color: #fff;
+        border-color: #ae6cdc;
+      }
+    }
+  }
 }
 
 .btn {
@@ -145,6 +179,21 @@ section {
   &-gray {
     background: #6b6b6b;
     color: #fff;
+  }
+
+  &-w100 {
+    width: 100%;
+    padding: 18px;
+    background: #ae6cdc;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    border-radius: 40px;
+  }
+
+  &-submit {
+    margin-top: 20px;
   }
 }
 
@@ -175,7 +224,7 @@ section {
       font-weight: 400;
     }
     .text-btn {
-      font-size: 18px;
+      font-size: 16px;
     }
   }
 }

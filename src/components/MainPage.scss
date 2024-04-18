@@ -21,8 +21,9 @@
 }
 
 .subscr-list {
+  min-height: 330px;
   max-height: 330px;
-  overflow: scroll;
+  overflow: auto;
 
   .subscr-list-item {
     display: flex;
