@@ -1,8 +1,8 @@
-import React from "react";
+import React, { createContext, useState } from "react";
+import { Route, Routes } from "react-router-dom";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getMessaging, getToken, isSupported } from "firebase/messaging";
-import { Route, Routes } from "react-router-dom";
 import "./App.scss";
 import "./index.scss";
 import LoginPage from "./components/LoginPage";
@@ -29,7 +29,11 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const messaging = getMessaging();
 
+export const AppContext = createContext();
+
 function App() {
+  const [deviceToken, setDeviceToken] = useState("");
+
   if (isSupported()) {
     // FCM(파이어베이스 클라우드 메시징)이 지원되지 않는 브라우저에서는 화면이 하얗게 뜨는 현상 방지
     getToken(messaging, {
@@ -39,7 +43,8 @@ function App() {
     })
       .then((currentToken) => {
         if (currentToken) {
-          console.log(currentToken);
+          // console.log(currentToken);
+          setDeviceToken(currentToken);
         } else {
           // Show permission request UI
           console.log(
@@ -55,17 +60,19 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/main" element={<MainPage />} />
-        <Route path="/mySubscription" element={<MySubscriptionPage />} />
-        <Route path="/ranking" element={<RankingPage />} />
-        <Route path="/community" element={<CommunityPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-      </Routes>
-    </div>
+    <AppContext.Provider value={deviceToken}>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/main" element={<MainPage />} />
+          <Route path="/mySubscription" element={<MySubscriptionPage />} />
+          <Route path="/ranking" element={<RankingPage />} />
+          <Route path="/community" element={<CommunityPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+        </Routes>
+      </div>
+    </AppContext.Provider>
   );
 }
 

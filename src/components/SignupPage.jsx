@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { AppContext } from "../App";
 import { Link } from "react-router-dom";
 import "./SignupPage.scss";
 import { initializeApp } from "firebase/app";
@@ -7,6 +8,9 @@ import {
   createUserWithEmailAndPassword,
   updateEmail,
 } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDJIKpp9yOyKk46wKRmFzVhXn3LD6TpipY",
@@ -20,10 +24,14 @@ const firebaseConfig = {
   measurementId: "G-BE9K8XNCTR",
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
+// const firebaseApp = initializeApp(firebaseConfig);
+const firebaseApp = firebase.initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
+// const db = getFirestore(firebaseApp);
+const db = firebase.firestore();
 
 export default function SignupPage() {
+  const deviceToken = useContext(AppContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passChk, setPassChk] = useState("");
@@ -37,6 +45,7 @@ export default function SignupPage() {
   // 회원가입 정보 firebase DB로 전송
   async function submitSignupHandler(event) {
     event.preventDefault();
+    // console.log(deviceToken);
 
     nickname.length === 0 ? setNicknameValid(false) : setNicknameValid(true);
     password.length < 6 ? setPasswordValid(false) : setPasswordValid(true);
@@ -49,7 +58,18 @@ export default function SignupPage() {
         password
       );
       console.log(userCredential);
+      // email, device token값 포함해서 firestore에도 회원정보 저장하기
+      db.collection("user")
+        .add({ email: email, token: deviceToken })
+        .then((docRef) => {
+          console.log("계정 생성 완료");
+        })
+        .catch((error) => {
+          console.error("Error adding document: ", error);
+        });
       alert("회원가입이 성공적으로 완료되었습니다!");
+      // 3초 뒤 자동 로그인 + 메인 페이지로 이동 구현
+      // ...
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         setEmailUnique(false);
