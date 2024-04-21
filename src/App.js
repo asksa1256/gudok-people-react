@@ -29,31 +29,31 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const messaging = getMessaging();
 
-if (isSupported()) {
-  // FCM(파이어베이스 클라우드 메시징)이 지원되지 않는 브라우저에서는 화면이 하얗게 뜨는 현상 방지
-  getToken(messaging, {
-    // 파이어베이스 웹 푸시 인증서 공개키
-    vapidKey:
-      "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
-  })
-    .then((currentToken) => {
-      if (currentToken) {
-        console.log(currentToken);
-      } else {
-        // Show permission request UI
-        console.log(
-          "No registration token available. Request permission to generate one."
-        );
-        // ...
-      }
-    })
-    .catch((err) => {
-      console.log("An error occurred while retrieving token. ", err);
-      // ...
-    });
-}
-
 function App() {
+  if (isSupported()) {
+    // FCM(파이어베이스 클라우드 메시징)이 지원되지 않는 브라우저에서는 화면이 하얗게 뜨는 현상 방지
+    getToken(messaging, {
+      // 파이어베이스 웹 푸시 인증서 공개키
+      vapidKey:
+        "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
+    })
+      .then((currentToken) => {
+        if (currentToken) {
+          console.log(currentToken);
+        } else {
+          // Show permission request UI
+          console.log(
+            "No registration token available. Request permission to generate one."
+          );
+          // ...
+        }
+      })
+      .catch((err) => {
+        console.log("An error occurred while retrieving token. ", err);
+        // ...
+      });
+  }
+
   return (
     <div className="App">
       <Routes>

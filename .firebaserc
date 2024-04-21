@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "web-push-test-c56fc"
+    "default": "gudok-87985",
+    "development": "gudok-87985"
   }
 }
