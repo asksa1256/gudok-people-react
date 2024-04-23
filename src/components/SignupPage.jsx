@@ -67,15 +67,14 @@ export default function SignupPage() {
           console.error("Error adding document: ", error);
         });
 
-      alert(
-        "회원가입이 성공적으로 완료되었습니다! 3초 뒤 메인 화면으로 이동합니다."
-      );
-
-      // 3초 뒤 자동 로그인 + 메인 페이지로 이동
+      // 로그인 처리
       signInWithEmailAndPassword(auth, email, password);
-      setTimeout(() => {
-        navigate("/main");
-      }, 3000);
+
+      // 메인으로 이동
+      navigate("/main");
+      alert(
+        "회원가입이 완료되었습니다. 확인을 누르면 메인 페이지로 이동합니다."
+      );
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         setEmailUnique(false);

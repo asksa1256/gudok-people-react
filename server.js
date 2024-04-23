@@ -44,14 +44,15 @@ app.get("*", (res, req) => {
 });
 
 // FCM 보내기 함수
-function sendFCM() {
+async function sendFCM() {
   // user 컬렉션의 전체 데이터 읽기
-  db.collection("user")
+  await db
+    .collection("user")
     .get()
     .then((snapshot) => {
       snapshot.forEach((doc) => {
         // user 컬렉션에서 토큰값 불러오기
-        // console.log(doc.data().device_token);
+        console.log(doc.data().token);
         const message = {
           notification: {
             title: "넷플릭스", // doc.data().title
@@ -60,7 +61,7 @@ function sendFCM() {
           // 푸시 알림 수신 대상 등 설정
           // token, topic 등
           // 예: token: '사용자 토큰'
-          token: doc.data().device_token,
+          token: doc.data().token,
         };
 
         admin
@@ -77,6 +78,6 @@ function sendFCM() {
 }
 
 // 서버에서 설정한 시간에 FCM 푸시 => 터미널에서 node server.js 로 서버 실행시키면 작동.
-schedule.scheduleJob("21 23 * * *", function () {
+schedule.scheduleJob("55 18 * * *", function () {
   sendFCM();
 });
