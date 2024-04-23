@@ -7,6 +7,13 @@ import { useNavigate } from "react-router-dom"; // 수정
 export default function LoginPage() {
   const navigate = useNavigate(); // 수정
 
+  const onCheckEnter = (e) => {
+    e.preventDefault();
+    if (e.key === "Enter") {
+      handleLogin();
+    }
+  };
+
   // 로그인 버튼 클릭 시 실행되는 함수
   const handleLogin = async () => {
     const email = document.getElementById("username").value;
@@ -31,7 +38,7 @@ export default function LoginPage() {
     <div className="align-center">
       <section className="LoginPage">
         <div className="contents">
-          <div className="form-area">
+          <div className="form-area" onKeyUp={onCheckEnter}>
             <figure className="logo">
               <img
                 src={`${process.env.PUBLIC_URL}/images/logo.svg`}
