@@ -12,6 +12,7 @@ import CommunityPage from "./components/CommunityPage";
 import RankingPage from "./components/RankingPage";
 import SettingsPage from "./components/SettingsPage";
 import MySubscriptionPage from "./components/MySubscriptionPage";
+import AddPostPage from "./components/AddPostPage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDJIKpp9yOyKk46wKRmFzVhXn3LD6TpipY",
@@ -69,6 +70,7 @@ function App() {
           <Route path="/mySubscription" element={<MySubscriptionPage />} />
           <Route path="/ranking" element={<RankingPage />} />
           <Route path="/community" element={<CommunityPage />} />
+          <Route path="/addPost" element={<AddPostPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </div>

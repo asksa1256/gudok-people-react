@@ -195,6 +195,26 @@ section {
   &-submit {
     margin-top: 20px;
   }
+
+  &-float {
+    position: absolute;
+    right: 16px;
+    bottom: 150px;
+    padding: 16px 20px;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 50px;
+    background: #ae6cdc;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    z-index: 9;
+
+    img {
+      width: 24px;
+      margin-right: 4px;
+      vertical-align: top;
+    }
+  }
 }
 
 .text-btn {

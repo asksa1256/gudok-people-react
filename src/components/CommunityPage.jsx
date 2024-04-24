@@ -35,6 +35,7 @@ export default function CommunityPage() {
   useEffect(() => {
     // 로그인 여부 확인
     const authService = getAuth();
+    console.log(authService.currentUser);
 
     // 게시물 불러오기
     const postsRef = firebase.database().ref("posts");
@@ -61,40 +62,57 @@ export default function CommunityPage() {
     return () => unsubscribe();
   }, []);
 
-  const addPost = () => {
+  const addPostClickHandler = () => {
     if (!user) {
+      // 사용자가 인증되지 않은 경우
       const loginRequired = window.confirm(
         "로그인이 필요합니다. 확인을 누르면 로그인으로 이동합니다."
       );
       if (loginRequired) {
         navigate("/");
       }
-      return; // 사용자가 인증되지 않은 경우
-    } else if (newPostTitle.trim() === "") {
-      alert("제목을 입력해주세요.");
-    } else if (newPostContent.trim() === "") {
-      alert("내용을 입력해주세요.");
+      return;
     }
-    const postsRef = firebase.database().ref("posts");
-    const newPostKey = postsRef.push().key;
-    const newPost = {
-      id: newPostKey,
-      title: newPostTitle,
-      content: newPostContent,
-      userId: user.uid, // 현재 사용자의 UID를 게시물에 저장
-    };
-    postsRef
-      .child(newPostKey)
-      .set(newPost)
-      .then(() => {
-        alert("게시물이 등록되었습니다.");
-        setNewPostTitle("");
-        setNewPostContent("");
-      })
-      .catch((error) => {
-        console.error("게시물을 추가하는 동안 오류가 발생했습니다:", error);
-      });
+    navigate("/addPost");
   };
+
+  // const addPost = () => {
+  //   if (!user) {
+  //     // 사용자가 인증되지 않은 경우
+  //     const loginRequired = window.confirm(
+  //       "로그인이 필요합니다. 확인을 누르면 로그인으로 이동합니다."
+  //     );
+  //     if (loginRequired) {
+  //       navigate("/");
+  //     }
+  //     return;
+  //   } else if (newPostTitle.trim() === "") {
+  //     alert("제목을 입력해주세요.");
+  //     return;
+  //   } else if (newPostContent.trim() === "") {
+  //     alert("내용을 입력해주세요.");
+  //     return;
+  //   }
+  //   const postsRef = firebase.database().ref("posts");
+  //   const newPostKey = postsRef.push().key;
+  //   const newPost = {
+  //     id: newPostKey,
+  //     title: newPostTitle,
+  //     content: newPostContent,
+  //     userId: user.uid, // 현재 사용자의 UID를 게시물에 저장
+  //   };
+  //   postsRef
+  //     .child(newPostKey)
+  //     .set(newPost)
+  //     .then(() => {
+  //       alert("게시물이 등록되었습니다.");
+  //       setNewPostTitle("");
+  //       setNewPostContent("");
+  //     })
+  //     .catch((error) => {
+  //       console.error("게시물을 추가하는 동안 오류가 발생했습니다:", error);
+  //     });
+  // };
 
   const deletePost = (postId) => {
     const post = posts.find((post) => post.id === postId);
@@ -153,7 +171,7 @@ export default function CommunityPage() {
               className="search-input"
             />
           </div>
-          <div className="community-form">
+          {/* <div className="community-form">
             <input
               type="text"
               value={newPostTitle}
@@ -170,7 +188,11 @@ export default function CommunityPage() {
             <button onClick={addPost} className="community-button">
               게시
             </button>
-          </div>
+          </div> */}
+          <button className="btn-float" onClick={addPostClickHandler}>
+            <img src="/images/add-line.png" alt="" />
+            글쓰기
+          </button>
           <ul className="community-list">
             {filteredPosts.map((post) => (
               <li key={post.id} className="community-item">
@@ -204,20 +226,20 @@ export default function CommunityPage() {
                   <p>{post.content}</p>
                 )}
                 {user && post.userId === user.uid && (
-                  <div>
-                    <button
-                      onClick={() => deletePost(post.id)}
-                      className="community-button"
-                    >
-                      삭제
-                    </button>
+                  <div className="actions">
                     <button
                       onClick={() =>
                         handleEditClick(post.id, post.title, post.content)
                       }
-                      className="community-button"
+                      className="community-button edit"
                     >
                       수정
+                    </button>
+                    <button
+                      onClick={() => deletePost(post.id)}
+                      className="community-button delete"
+                    >
+                      삭제
                     </button>
                   </div>
                 )}
