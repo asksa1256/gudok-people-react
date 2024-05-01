@@ -78,7 +78,7 @@ export default function AddPostPage() {
       <section className="AddPostPage">
         <div className="contents">
           <div className="nav-top"></div>
-          <header className="community-form-header">
+          <header className="contents-header">
             <button className="close-btn" onClick={cancelAddPostHandler}>
               <img src="/images/close.png" alt="작성 취소" />
             </button>

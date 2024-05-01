@@ -89,7 +89,7 @@ export default function EditPostPage() {
       <section className="EditPostPage">
         <div className="contents">
           <div className="nav-top"></div>
-          <header className="community-form-header">
+          <header className="contents-header">
             <button className="close-btn" onClick={cancelEditPostHandler}>
               <img src="/images/close.png" alt="수정 취소" />
             </button>

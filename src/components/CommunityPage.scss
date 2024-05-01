@@ -20,13 +20,14 @@
 
 .search-input {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 16px;
+  border: 1px solid #d2d2d2;
+  border-radius: 12px;
   font-size: 16px;
 }
 
-.AddPostPage {
+.AddPostPage,
+.EditPostPage {
   .contents {
     padding: 16px 0;
   }
@@ -35,25 +36,6 @@
 .community-form {
   margin-bottom: 20px;
   padding: 16px;
-
-  &-header {
-    display: flex;
-    align-items: center;
-    padding: 0 16px 16px;
-    border-bottom: 1px solid #d2d2d2;
-
-    h6 {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 18px;
-    }
-
-    .text-btn {
-      font-size: 18px;
-      margin-left: auto;
-    }
-  }
 }
 
 .community-input,
@@ -134,7 +116,7 @@
   .actions {
     position: absolute;
     right: 2px;
-    top: 6px;
+    top: 2px;
 
     button + button {
       margin-left: 8px;

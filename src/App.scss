@@ -24,10 +24,48 @@ section {
   height: 100%;
   padding: 16px;
   background: #fff;
+
+  &-header {
+    display: flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 16px 16px;
+    border-bottom: 1px solid #d2d2d2;
+
+    h6 {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 18px;
+    }
+
+    .text-btn {
+      font-size: 18px;
+      margin-left: auto;
+    }
+  }
+
+  &-dl {
+    margin: 0 16px;
+
+    dt {
+      margin-bottom: 8px;
+    }
+    dd {
+      margin-bottom: 24px;
+      color: #6b6b6b;
+    }
+  }
 }
 
 .title-h4 {
   font-size: 20px;
+}
+
+.sub-title {
+  margin: 24px 16px;
+  font-weight: 700;
+  font-size: 14px;
 }
 
 .text-center {

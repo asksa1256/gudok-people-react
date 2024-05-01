@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import firebase from "firebase/compat/app";
 import "firebase/compat/database";
-import "firebase/compat/auth"; // Firebase Authentication 추가
+import "firebase/compat/auth";
 import { getAuth } from "firebase/auth";
 import "./CommunityPage.scss";
 import Dockbar from "./Dockbar";
