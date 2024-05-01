@@ -35,7 +35,7 @@ export default function CommunityPage() {
   useEffect(() => {
     // 로그인 여부 확인
     const authService = getAuth();
-    console.log(authService.currentUser);
+    // console.log(authService.currentUser);
 
     // 게시물 불러오기
     const postsRef = firebase.database().ref("posts");
@@ -118,6 +118,9 @@ export default function CommunityPage() {
     const post = posts.find((post) => post.id === postId);
     if (!user || !post || post.userId !== user.uid) return; // 사용자가 인증되지 않았거나 해당 게시물을 작성한 사용자가 아닌 경우
     const postRef = firebase.database().ref(`posts/${postId}`);
+
+    const checkDeletePost = window.confirm("삭제하시겠습니까?");
+    if (!checkDeletePost) return;
     postRef
       .remove()
       .then(() => {
@@ -128,25 +131,28 @@ export default function CommunityPage() {
       });
   };
 
-  const updatePost = (postId, updatedPost) => {
-    const post = posts.find((post) => post.id === postId);
-    if (!user || !post || post.userId !== user.uid) return; // 사용자가 인증되지 않았거나 해당 게시물을 작성한 사용자가 아닌 경우
-    const postRef = firebase.database().ref(`posts/${postId}`);
-    postRef
-      .update(updatedPost)
-      .then(() => {
-        console.log("게시물이 수정되었습니다.");
-        setEditingPostId(null);
-      })
-      .catch((error) => {
-        console.error("게시물을 수정하는 동안 오류가 발생했습니다:", error);
-      });
-  };
+  // const updatePost = (postId, updatedPost) => {
+  //   const post = posts.find((post) => post.id === postId);
+  //   if (!user || !post || post.userId !== user.uid) return; // 사용자가 인증되지 않았거나 해당 게시물을 작성한 사용자가 아닌 경우
+  //   const postRef = firebase.database().ref(`posts/${postId}`);
+  //   postRef
+  //     .update(updatedPost)
+  //     .then(() => {
+  //       console.log("게시물이 수정되었습니다.");
+  //       setEditingPostId(null);
+  //     })
+  //     .catch((error) => {
+  //       console.error("게시물을 수정하는 동안 오류가 발생했습니다:", error);
+  //     });
+  // };
 
   const handleEditClick = (postId, postTitle, postContent) => {
     setEditingPostId(postId);
     setNewPostTitle(postTitle);
     setNewPostContent(postContent);
+
+    // 수정 페이지로 이동
+    navigate(`/editPost/${postId}`);
   };
 
   const handleSearchChange = (event) => {
@@ -210,7 +216,7 @@ export default function CommunityPage() {
                       onChange={(e) => setNewPostContent(e.target.value)}
                       className="community-textarea"
                     />
-                    <button
+                    {/* <button
                       onClick={() =>
                         updatePost(post.id, {
                           title: newPostTitle,
@@ -220,7 +226,7 @@ export default function CommunityPage() {
                       className="community-button"
                     >
                       수정 완료
-                    </button>
+                    </button> */}
                   </div>
                 ) : (
                   <p>{post.content}</p>
