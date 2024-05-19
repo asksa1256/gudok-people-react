@@ -27,7 +27,8 @@
 }
 
 .AddPostPage,
-.EditPostPage {
+.EditPostPage,
+.PostDetailPage {
   .contents {
     padding: 16px 0;
   }
@@ -90,8 +91,9 @@
   h2 {
     font-size: 20px;
     font-weight: 500;
-    margin-bottom: 10px;
+    padding-bottom: 10px;
     color: #333;
+    cursor: pointer;
   }
 
   p {
@@ -102,6 +104,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    cursor: pointer;
   }
 
   textarea {
@@ -117,6 +120,7 @@
     position: absolute;
     right: 2px;
     top: 2px;
+    z-index: 3;
 
     button + button {
       margin-left: 8px;

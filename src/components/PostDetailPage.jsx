@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import firebase from "firebase/compat/app";
 import { getAuth } from "firebase/auth";
-import "./CommunityPage.scss";
+import "./PostDetailPage.scss";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDJIKpp9yOyKk46wKRmFzVhXn3LD6TpipY",
@@ -20,25 +20,18 @@ if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
-export default function EditPostPage() {
+export default function PostDetailPage() {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null); // 인증된 사용자 정보 저장
   const { postId } = useParams();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [postUserId, setPostUserId] = useState(null);
 
   useEffect(() => {
     // 현재 사용자 정보 확인
     const user = getAuth().currentUser;
-    if (!user) {
-      // 사용자가 인증되지 않은 경우
-      const loginRequired = window.confirm(
-        "로그인이 필요합니다. 확인을 누르면 로그인으로 이동합니다."
-      );
-      if (loginRequired) {
-        navigate("/");
-      }
-      return;
-    }
+    setUser(user);
 
     // 게시글 데이터 가져오기
     const fetchPost = async () => {
@@ -50,66 +43,54 @@ export default function EditPostPage() {
         const postData = postSnapshot.val();
         setTitle(postData.title);
         setContent(postData.content);
+        setPostUserId(postData.userId);
       } catch (error) {
         console.error("Error fetching post:", error);
       }
     };
-
     fetchPost();
   }, [postId]);
 
-  const handleTitleChange = (e) => {
-    setTitle(e.target.value);
+  // const handleUpdatePost = async () => {
+  //   try {
+  //     // Firebase 데이터베이스에 게시글 업데이트
+  //     await firebase.database().ref(`posts/${postId}`).update({
+  //       title,
+  //       content,
+  //     });
+  //     alert("게시글이 수정되었습니다.");
+  //     navigate("/community");
+  //   } catch (error) {
+  //     console.error("Error updating post:", error);
+  //   }
+  // };
+
+  const updatePostHandler = () => {
+    navigate(`/community/editPost/${postId}`);
   };
 
-  const handleContentChange = (e) => {
-    setContent(e.target.value);
-  };
-
-  const handleUpdatePost = async () => {
-    try {
-      // Firebase 데이터베이스에 게시글 업데이트
-      await firebase.database().ref(`posts/${postId}`).update({
-        title,
-        content,
-      });
-      alert("게시글이 수정되었습니다.");
-      navigate("/community");
-    } catch (error) {
-      console.error("Error updating post:", error);
-    }
-  };
-
-  const cancelEditPostHandler = () => {
+  const closeViewDetailHandler = () => {
     navigate("/community");
   };
 
   return (
     <div className="align-center">
-      <section className="EditPostPage">
+      <section className="PostDetailPage">
         <div className="contents">
           <div className="nav-top"></div>
           <header className="contents-header">
-            <button className="close-btn" onClick={cancelEditPostHandler}>
-              <img src="/images/close.png" alt="수정 취소" />
+            <button className="close-btn" onClick={closeViewDetailHandler}>
+              <img src="/images/close.png" alt="뒤로가기" />
             </button>
-            <h6>글 수정</h6>
-            <button className="text-btn" onClick={handleUpdatePost}>
-              완료
-            </button>
+            {user && postUserId === user.uid && (
+              <button className="text-btn" onClick={updatePostHandler}>
+                수정
+              </button>
+            )}
           </header>
-          <div className="community-form">
-            <input
-              type="text"
-              value={title}
-              onChange={handleTitleChange}
-              className="community-input"
-            />
-            <textarea
-              value={content}
-              onChange={handleContentChange}
-              className="community-textarea"
-            />
+          <div className="post-detail">
+            <h3>{title}</h3>
+            <p>{content}</p>
           </div>
         </div>
       </section>
