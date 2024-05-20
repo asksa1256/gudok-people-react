@@ -81,15 +81,12 @@ export default function PostDetailPage() {
         <div className="contents">
           <div className="nav-top"></div>
           <header className="contents-header">
-            <button
-              className="close-btn"
-              onClick={() => closeViewDetailHandler}
-            >
+            <button className="close-btn" onClick={closeViewDetailHandler}>
               <img src="/images/close.png" alt="뒤로가기" />
             </button>
             {user && postUserId === user.uid && (
               <div className="actions">
-                <button className="text-btn" onClick={() => updatePostHandler}>
+                <button className="text-btn" onClick={updatePostHandler}>
                   수정
                 </button>
                 <button onClick={() => deletePost(postId)} className="text-btn">
