@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import firebase from "firebase/compat/app";
 import { getAuth } from "firebase/auth";
+import "../App.scss";
 import "./PostDetailPage.scss";
 
 const firebaseConfig = {
@@ -51,22 +52,23 @@ export default function PostDetailPage() {
     fetchPost();
   }, [postId]);
 
-  // const handleUpdatePost = async () => {
-  //   try {
-  //     // Firebase 데이터베이스에 게시글 업데이트
-  //     await firebase.database().ref(`posts/${postId}`).update({
-  //       title,
-  //       content,
-  //     });
-  //     alert("게시글이 수정되었습니다.");
-  //     navigate("/community");
-  //   } catch (error) {
-  //     console.error("Error updating post:", error);
-  //   }
-  // };
-
   const updatePostHandler = () => {
     navigate(`/community/editPost/${postId}`);
+  };
+
+  const deletePost = (postId) => {
+    const postRef = firebase.database().ref(`posts/${postId}`);
+
+    const checkDeletePost = window.confirm("삭제 하시겠습니까?");
+    if (!checkDeletePost) return;
+    postRef
+      .remove()
+      .then(() => {
+        console.log("게시물이 삭제되었습니다.");
+      })
+      .catch((error) => {
+        console.error("게시물을 삭제하는 동안 오류가 발생했습니다:", error);
+      });
   };
 
   const closeViewDetailHandler = () => {
@@ -79,19 +81,28 @@ export default function PostDetailPage() {
         <div className="contents">
           <div className="nav-top"></div>
           <header className="contents-header">
-            <button className="close-btn" onClick={closeViewDetailHandler}>
+            <button
+              className="close-btn"
+              onClick={() => closeViewDetailHandler}
+            >
               <img src="/images/close.png" alt="뒤로가기" />
             </button>
             {user && postUserId === user.uid && (
-              <button className="text-btn" onClick={updatePostHandler}>
-                수정
-              </button>
+              <div className="actions">
+                <button className="text-btn" onClick={() => updatePostHandler}>
+                  수정
+                </button>
+                <button onClick={() => deletePost(postId)} className="text-btn">
+                  삭제
+                </button>
+              </div>
             )}
           </header>
           <div className="post-detail">
             <h3>{title}</h3>
             <p>{content}</p>
           </div>
+          {/* 댓글 영역 추가 */}
         </div>
       </section>
     </div>

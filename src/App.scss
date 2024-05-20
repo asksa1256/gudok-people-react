@@ -42,6 +42,14 @@ section {
     .text-btn {
       font-size: 18px;
       margin-left: auto;
+
+      + .text-btn {
+        margin-left: 16px;
+      }
+    }
+
+    .actions {
+      margin-left: auto;
     }
   }
 
