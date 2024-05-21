@@ -76,7 +76,7 @@ const mockData = {
 
 export default function RankingPage() {
   const [data, setData] = useState({});
-  const [platformCategory, setPlatformCategory] = useState("Streaming");
+  const [selectedCategory, setSelectedCategory] = useState("Streaming");
 
   useEffect(() => {
     // Here you would typically fetch data from an API
@@ -91,22 +91,28 @@ export default function RankingPage() {
           <div className="nav-top"></div>
           <h2>구독 플랫폼 랭킹</h2>
           <ul className="platform-category">
-            <li className="active">
-              <button onClick={() => setPlatformCategory("Streaming")}>
+            <li
+              className={
+                selectedCategory === "Streaming" ? "active" : undefined
+              }
+            >
+              <button onClick={() => setSelectedCategory("Streaming")}>
                 동영상 스트리밍
               </button>
             </li>
-            <li>
-              <button onClick={() => setPlatformCategory("Music")}>음악</button>
+            <li className={selectedCategory === "Music" ? "active" : undefined}>
+              <button onClick={() => setSelectedCategory("Music")}>음악</button>
             </li>
-            <li>
-              <button onClick={() => setPlatformCategory("Book")}>도서</button>
+            <li className={selectedCategory === "Book" ? "active" : undefined}>
+              <button onClick={() => setSelectedCategory("Book")}>도서</button>
             </li>
-            <li>
-              <button onClick={() => setPlatformCategory("News")}>뉴스</button>
+            <li className={selectedCategory === "News" ? "active" : undefined}>
+              <button onClick={() => setSelectedCategory("News")}>뉴스</button>
             </li>
-            <li>
-              <button onClick={() => setPlatformCategory("Delivery")}>
+            <li
+              className={selectedCategory === "Delivery" ? "active" : undefined}
+            >
+              <button onClick={() => setSelectedCategory("Delivery")}>
                 배달
               </button>
             </li>
@@ -117,7 +123,7 @@ export default function RankingPage() {
                 key={category}
                 category={category}
                 services={data[category]}
-                selectedCategory={platformCategory}
+                selectedCategory={selectedCategory}
               />
             ))}
           </ul>
