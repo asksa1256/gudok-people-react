@@ -1,0 +1,87 @@
+.platform-category {
+  display: flex;
+  margin-top: 10px;
+  padding: 4px 0 24px;
+  white-space: nowrap;
+  overflow-x: auto;
+
+  li {
+    + li {
+      margin-left: 10px;
+    }
+
+    &.active {
+      button {
+        background: #ae6cdc;
+        color: #fff;
+        font-weight: 700;
+      }
+    }
+
+    button {
+      flex-shrink: 0;
+      padding: 6px 14px;
+      font-size: 18px;
+      font-weight: 700;
+      border: 2px solid #ae6cdc;
+      border-radius: 50px;
+      color: #ae6cdc;
+    }
+  }
+}
+
+.platform-chart-list {
+  max-height: 560px;
+  overflow-y: auto;
+
+  li {
+    position: relative;
+    display: flex;
+
+    + li {
+      margin-top: 18px;
+    }
+
+    .ico {
+      width: 54px;
+      flex-shrink: 0;
+    }
+
+    .platform-info {
+      width: 100%;
+      margin: 6px 0 0 14px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #c4c4c4;
+
+      .info {
+        .rank {
+          font-size: 18px;
+          font-weight: 700;
+        }
+
+        .title {
+          margin-left: 10px;
+          font-size: 18px;
+        }
+
+        .desc {
+          margin-top: 4px;
+          font-size: 14px;
+          color: #6b6b6b;
+        }
+      }
+    }
+
+    .link-btn {
+      position: absolute;
+      right: 0;
+      top: 0;
+      padding: 6px 10px;
+      font-size: 14px;
+      font-weight: 700;
+      background: #6b6b6b;
+      color: #fff;
+      border-radius: 50px;
+    }
+  }
+}
