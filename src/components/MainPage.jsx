@@ -23,46 +23,43 @@ const firebaseConfig = {
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// 현재 사용자 정보 확인
-const currentUser = getAuth().currentUser;
-
 export default function MainPage(props) {
   const [showModal, setShowModal] = useState(false);
   const [subscriptionData, setSubscriptionData] = useState([]);
   const [docId, setDocId] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
 
   // 구독 정보 불러오기
   const fetchData = () => {
-    // 로그인 했을 때만 조회 가능
-    if (currentUser) {
-      firebase.auth().onAuthStateChanged(async (user) => {
-        try {
-          const snapshot = await db
-            .collection("user")
-            .where("email", "==", user.email)
-            .get();
-          const doc = snapshot.docs[0]; // 해당 계정의 docId값
-          setDocId(doc.id);
+    firebase.auth().onAuthStateChanged(async (user) => {
+      try {
+        const snapshot = await db
+          .collection("user")
+          .where("email", "==", user.email)
+          .get();
+        const doc = snapshot.docs[0]; // 해당 계정의 docId값
+        setDocId(doc.id);
 
-          const subCollectionSnapshot = await db
-            .collection("user")
-            .doc(doc.id)
-            .collection("subscriptions")
-            .get();
+        const subCollectionSnapshot = await db
+          .collection("user")
+          .doc(doc.id)
+          .collection("subscriptions")
+          .get();
 
-          const data = subCollectionSnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          setSubscriptionData(data);
-        } catch (error) {
-          console.error("Error fetching documents:", error);
-        }
-      });
-    }
+        const data = subCollectionSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setSubscriptionData(data);
+      } catch (error) {
+        console.error("Error fetching documents:", error);
+      }
+    });
   };
 
   useEffect(() => {
+    const user = getAuth().currentUser;
+    setCurrentUser(user);
     fetchData();
   }, []);
 
@@ -126,25 +123,16 @@ export default function MainPage(props) {
               </button>
             </div>
             <ul className="subscr-list">
-              {currentUser ? (
-                subscriptionData.map((data) => (
-                  <SubscriptionItem
-                    key={data.id}
-                    title={data.title}
-                    price={data.price}
-                    payDate={data.payDate}
-                    sharing={data.sharing}
-                    free={data.free}
-                  />
-                ))
-              ) : (
-                <li className="warning">
-                  로그인이 필요합니다.
-                  <button className="text-btn">
-                    <Link to="/">로그인</Link>
-                  </button>
-                </li>
-              )}
+              {subscriptionData.map((data) => (
+                <SubscriptionItem
+                  key={data.id}
+                  title={data.title}
+                  price={data.price}
+                  payDate={data.payDate}
+                  sharing={data.sharing}
+                  free={data.free}
+                />
+              ))}
             </ul>
           </div>
         </div>
