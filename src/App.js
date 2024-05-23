@@ -17,15 +17,14 @@ import EditPostPage from "./components/EditPostPage";
 import PostDetailPage from "./components/PostDetailPage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDJIKpp9yOyKk46wKRmFzVhXn3LD6TpipY",
-  authDomain: "gudok-87985.firebaseapp.com",
-  databaseURL:
-    "https://gudok-87985-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "gudok-87985",
-  storageBucket: "gudok-87985.appspot.com",
-  messagingSenderId: "359891219478",
-  appId: "1:359891219478:web:25b97dd447f5379f9b3137",
-  measurementId: "G-BE9K8XNCTR",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_FIREBASE_DB_URL,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENSOR_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
 const app = initializeApp(firebaseConfig);
@@ -40,25 +39,20 @@ function App() {
   if (isSupported()) {
     // FCM(파이어베이스 클라우드 메시징)이 지원되지 않는 브라우저에서는 화면이 하얗게 뜨는 현상 방지
     getToken(messaging, {
-      // 파이어베이스 웹 푸시 인증서 공개키
       vapidKey:
         "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
     })
       .then((currentToken) => {
         if (currentToken) {
-          // console.log(currentToken);
           setDeviceToken(currentToken);
         } else {
-          // Show permission request UI
-          console.log(
-            "No registration token available. Request permission to generate one."
+          alert(
+            "알림 거부 시 자동결제 사전 알림을 받을 수 없으므로 알림 허용을 권장합니다."
           );
-          // ...
         }
       })
       .catch((err) => {
         console.log("An error occurred while retrieving token. ", err);
-        // ...
       });
   }
 

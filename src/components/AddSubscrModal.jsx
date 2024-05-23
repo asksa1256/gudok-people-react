@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import "./Modal.scss";
 
 export default function Modal(props) {
-  const { open, close, title } = props;
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [date, setDate] = useState("");
+  const { open, close, modalTitle } = props; // 모달 동작 관련
+  const [title, setTitle] = useState("");
+  const [price, setPrice] = useState(0);
+  const [payDate, setPayDate] = useState("");
   const [freePeriod, setFreePeriod] = useState(30);
   const [shareCount, setShareCount] = useState(2);
   const [free, setFree] = useState(false);
@@ -48,17 +48,21 @@ export default function Modal(props) {
   if (!animate && !visible) return null;
 
   const submitFormHandler = () => {
-    const inputValues = {
-      name: name,
+    if (title.length === 0 || price <= 0 || payDate.length === 0) {
+      alert("입력되지 않은 항목이 있습니다.");
+      return;
+    }
+
+    const newData = {
+      title: title,
       price: price,
-      date: date,
-      freePeriod: !free ? "" : freePeriod,
-      shareCount: !share ? "" : shareCount,
+      payDate: payDate,
+      free: !free ? 0 : freePeriod,
+      sharing: !share ? 0 : shareCount,
     };
 
-    console.log(inputValues);
-
-    // DB로 입력값 전송...
+    // MainPage로 데이터 전달
+    props.updateData(newData);
   };
 
   return (
@@ -66,7 +70,7 @@ export default function Modal(props) {
       <div className={open ? "backdrop open" : "backdrop close"}></div>
       <div className={open ? "modal open" : "modal close"}>
         <div className="modal-header">
-          <h3 className="modal-title">{title}</h3>
+          <h3 className="modal-title">{modalTitle}</h3>
           <button className="modal-close" onClick={close}>
             <img src="/images/close.png" alt="모달창 닫기" />
           </button>
@@ -76,8 +80,8 @@ export default function Modal(props) {
           <input
             type="text"
             id="subscription-name"
-            value={name}
-            onChange={(e) => setName(e.target.value.trim())}
+            value={title}
+            onChange={(e) => setTitle(e.target.value.trim())}
             placeholder="쿠팡와우, 넷플릭스, 멜론, ..."
           />
         </div>
@@ -87,6 +91,7 @@ export default function Modal(props) {
             type="number"
             id="subscription-price"
             placeholder="5500"
+            style={{ textAlign: "left" }}
             value={price}
             onChange={(e) => setPrice(e.target.value.trim())}
           />
@@ -97,8 +102,8 @@ export default function Modal(props) {
             type="date"
             id="subscription-date"
             placeholder="2024-01-01"
-            value={date}
-            onChange={(e) => setDate(e.target.value.trim())}
+            value={payDate}
+            onChange={(e) => setPayDate(e.target.value.trim())}
           />
         </div>
         <div className="form-control">

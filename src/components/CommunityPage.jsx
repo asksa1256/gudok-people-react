@@ -8,15 +8,14 @@ import "./CommunityPage.scss";
 import Dockbar from "./Dockbar";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDJIKpp9yOyKk46wKRmFzVhXn3LD6TpipY",
-  authDomain: "gudok-87985.firebaseapp.com",
-  databaseURL:
-    "https://gudok-87985-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "gudok-87985",
-  storageBucket: "gudok-87985.appspot.com",
-  messagingSenderId: "359891219478",
-  appId: "1:359891219478:web:25b97dd447f5379f9b3137",
-  measurementId: "G-BE9K8XNCTR",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_FIREBASE_DB_URL,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENSOR_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
 if (!firebase.apps.length) {
@@ -25,9 +24,6 @@ if (!firebase.apps.length) {
 
 export default function CommunityPage() {
   const [posts, setPosts] = useState([]);
-  // const [newPostTitle, setNewPostTitle] = useState("");
-  // const [newPostContent, setNewPostContent] = useState("");
-  // const [editingPostId, setEditingPostId] = useState(null);
   const [user, setUser] = useState(null); // 인증된 사용자 정보 저장
   const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태 추가
   const navigate = useNavigate();

@@ -4,7 +4,6 @@ import "./RankingPage.scss";
 export default function RankingList({ category, services, selectedCategory }) {
   return (
     <>
-      {}
       {category === selectedCategory &&
         services.map((service) => (
           <li key={service.id}>

@@ -1,23 +1,87 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import firebase from "firebase/compat/app";
+import "firebase/compat/database";
+import "firebase/compat/auth";
+import { getAuth } from "firebase/auth";
 import "./MainPage.scss";
-import MySubscrList from "./MySubscrList";
+import SubscriptionItem from "./SubscriptionItem";
 import AddSubscrModal from "./AddSubscrModal";
 import Dockbar from "./Dockbar";
 
-const items = [
-  {
-    id: Math.random(),
-    title: "넷플릭스",
-    price: 5500,
-    paymentDate: "04.26",
-    imgSrc: "/images/netflix-logo.png",
-    imgAlt: "넷플릭스 아이콘",
-    sharing: false,
-  },
-];
+const firebaseConfig = {
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_FIREBASE_DB_URL,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENSOR_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
+};
 
-export default function MainPage() {
+const firebaseApp = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// 현재 사용자 정보 확인
+const currentUser = getAuth().currentUser;
+
+export default function MainPage(props) {
   const [showModal, setShowModal] = useState(false);
+  const [subscriptionData, setSubscriptionData] = useState([]);
+  const [docId, setDocId] = useState(null);
+
+  // 구독 정보 불러오기
+  const fetchData = () => {
+    // 로그인 했을 때만 조회 가능
+    if (currentUser) {
+      firebase.auth().onAuthStateChanged(async (user) => {
+        try {
+          const snapshot = await db
+            .collection("user")
+            .where("email", "==", user.email)
+            .get();
+          const doc = snapshot.docs[0]; // 해당 계정의 docId값
+          setDocId(doc.id);
+
+          const subCollectionSnapshot = await db
+            .collection("user")
+            .doc(doc.id)
+            .collection("subscriptions")
+            .get();
+
+          const data = subCollectionSnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setSubscriptionData(data);
+        } catch (error) {
+          console.error("Error fetching documents:", error);
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // db에 새 구독 정보 추가
+  const onUpdateData = async (newData) => {
+    try {
+      await db
+        .collection("user")
+        .doc(docId)
+        .collection("subscriptions")
+        .add(newData); // 새로 추가할 데이터
+      alert("추가되었습니다.");
+
+      // 추가 후 리스트 새로고침
+      fetchData();
+    } catch (error) {
+      console.error("컬렉션 추가 중 오류 발생:", error);
+    }
+  };
 
   const showAddSubscrModal = () => {
     setShowModal(true);
@@ -33,7 +97,8 @@ export default function MainPage() {
         <AddSubscrModal
           open={showModal}
           close={closeModal}
-          title={"새 구독 추가"}
+          modalTitle={"새 구독 추가"}
+          updateData={onUpdateData}
         />
         <div className="contents">
           <div className="nav-top"></div>
@@ -60,107 +125,27 @@ export default function MainPage() {
                 + 추가하기
               </button>
             </div>
-            <MySubscrList items={items} />
-            {/* <ul className="subscr-list">
-              <li className="subscr-list-item">
-                <figure className="icon">
-                  <img src="/images/netflix-logo.png" alt="넷플릭스 아이콘" />
-                </figure>
-                <div className="desc">
-                  <span className="name">넷플릭스</span>
-                  <div className="price-wrap">
-                    <span className="price">5,500</span>
-                    <span className="won">원</span>
-                  </div>
-                </div>
-                <div className="payment-wrap">
-                  <div className="payment-due">
-                    <span className="date">04.26</span>
-                    <span className="txt">결제 예정</span>
-                  </div>
-                </div>
-              </li>
-              <li className="subscr-list-item">
-                <figure className="icon">
-                  <img src="/images/couplay-logo.png" alt="쿠팡플레이 아이콘" />
-                </figure>
-                <div className="desc">
-                  <span className="name">쿠팡플레이</span>
-                  <div className="price-wrap">
-                    <span className="price">5,000</span>
-                    <span className="won">원</span>
-                  </div>
-                </div>
-                <div className="payment-wrap">
-                  <div className="payment-due">
-                    <span className="date">04.23</span>
-                    <span className="txt">결제 예정</span>
-                  </div>
-                </div>
-              </li>
-              <li className="subscr-list-item">
-                <figure className="icon">
-                  <img src="/images/tving-logo.png" alt="티빙 아이콘" />
-                </figure>
-                <div className="desc">
-                  <span className="name">티빙</span>
-                  <div className="price-wrap">
-                    <span className="price">11,900</span>
-                    <span className="won">원</span>
-                  </div>
-                </div>
-                <div className="payment-wrap">
-                  <div className="payment-due">
-                    <span className="date">05.05</span>
-                    <span className="txt">결제 예정</span>
-                  </div>
-                </div>
-              </li>
-              <li className="subscr-list-item">
-                <figure className="icon">
-                  <img src="/images/spotify-logo.png" alt="스포티파이 아이콘" />
-                </figure>
-                <div className="desc">
-                  <span className="name">스포티파이</span>
-                  <div className="price-wrap">
-                    <span className="price">12,000</span>
-                    <span className="won">원</span>
-                  </div>
-                </div>
-                <div className="payment-wrap">
-                  <div className="sharing">
-                    <img src="/images/link.png" alt="" />
-                    계정 공유중
-                  </div>
-                  <div className="payment-due">
-                    <span className="date">04.12</span>
-                    <span className="txt">결제 예정</span>
-                  </div>
-                </div>
-              </li>
-              <li className="subscr-list-item">
-                <figure className="icon">
-                  <img src="/images/youtube-logo.png" alt="유튜브 아이콘" />
-                </figure>
-                <div className="desc">
-                  <span className="name">유튜브 프리미엄</span>
-                  <div className="price-wrap">
-                    <span className="price">13,500</span>
-                    <span className="won">원</span>
-                  </div>
-                </div>
-                <div className="payment-wrap">
-                  <div className="sharing">
-                    <img src="/images/link.png" alt="" />
-                    계정 공유중
-                  </div>
-                  <div className="payment-due">
-                    <span className="date">04.15</span>
-                    <span className="txt">결제 예정</span>
-                  </div>
-                </div>
-              </li>
-            </ul> */}
+            <ul className="subscr-list">
+              {currentUser ? (
+                subscriptionData.map((data) => (
+                  <SubscriptionItem
+                    key={data.id}
+                    title={data.title}
+                    price={data.price}
+                    payDate={data.payDate}
+                    sharing={data.sharing}
+                    free={data.free}
+                  />
+                ))
+              ) : (
+                <li className="warning">
+                  로그인이 필요합니다.
+                  <button className="text-btn">
+                    <Link to="/">로그인</Link>
+                  </button>
+                </li>
+              )}
+            </ul>
           </div>
         </div>
         <Dockbar active="main" />
