@@ -131,6 +131,7 @@ export default function MainPage(props) {
                   payDate={data.payDate}
                   sharing={data.sharing}
                   free={data.free}
+                  imgUrl={data.imgUrl}
                 />
               ))}
             </ul>

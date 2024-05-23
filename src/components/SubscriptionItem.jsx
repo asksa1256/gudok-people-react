@@ -6,12 +6,13 @@ export default function SubscriptionItem({
   payDate,
   sharing,
   free,
+  imgUrl,
 }) {
   return (
     <>
       <li className="subscr-list-item">
         <figure className="icon">
-          {/* <img src={item.imgSrc} alt={item.imgAlt} /> */}
+          <img src={imgUrl} alt="" />
         </figure>
         <div className="desc">
           <span className="name">{title}</span>
