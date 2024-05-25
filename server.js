@@ -110,6 +110,35 @@ async function sendFCM() {
       });
     }
   }
+
+  // user 컬렉션의 전체 데이터 읽기
+  // db.collection("user")
+  //   .get()
+  //   .then((snapshot) => {
+  //     snapshot.forEach((doc) => {
+  //       // user 컬렉션에서 토큰값 불러오기
+  //       const message = {
+  //         notification: {
+  //           title: "넷플릭스", // doc.data().title
+  //           body: "04-26에 5,500원이 자동 결제됩니다.", // doc.data().date, doc.data().price,
+  //         },
+  //         // 푸시 알림 수신 대상 등 설정
+  //         // token, topic 등
+  //         // 예: token: '사용자 토큰'
+  //         token: doc.data().token,
+  //       };
+
+  //       admin
+  //         .messaging()
+  //         .send(message)
+  //         .then((response) => {
+  //           console.log("Successfully sent message:", response);
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error sending message:", error);
+  //         });
+  //     });
+  //   });
 }
 
 sendFCM();
