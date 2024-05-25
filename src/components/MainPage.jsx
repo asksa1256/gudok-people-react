@@ -32,6 +32,7 @@ export default function MainPage(props) {
   const [subscriptionData, setSubscriptionData] = useState([]);
   const [docId, setDocId] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   // 구독 정보 불러오기
   const fetchData = () => {
@@ -62,6 +63,7 @@ export default function MainPage(props) {
                 .collection("subscriptions")
                 .get()
                 .then((querySnapshot) => {
+                  let totalPrice = 0;
                   querySnapshot.forEach((doc) => {
                     // 각 문서의 'token' 필드값 갱신
                     docRef
@@ -76,6 +78,10 @@ export default function MainPage(props) {
                       .catch((error) => {
                         console.error("Error updating document: ", error);
                       });
+
+                    // 총 구독료 계산
+                    totalPrice += doc.data().price;
+                    setTotalPrice(totalPrice);
                   });
                 });
             } catch (error) {
@@ -154,7 +160,9 @@ export default function MainPage(props) {
               <h5 className="box-title">이번달 총 구독료</h5>
             </div>
             <div className="total-price-wrap">
-              <span className="price">47,900</span>
+              <span className="price">
+                {totalPrice.toLocaleString("ko-KR")}
+              </span>
               <span className="won">원</span>
             </div>
           </div>
