@@ -88,7 +88,9 @@ async function sendFCM() {
         const message = {
           notification: {
             title: `${item.title}`,
-            body: `${item.payDate}에 ${item.price}원이 자동 결제됩니다.`,
+            body: `${item.payDate}일에 ${item.price.toLocaleString(
+              "ko-KR"
+            )}원이 자동 결제됩니다.`,
           },
           // 푸시 알림 수신 대상 등 설정
           token: item.token,
@@ -100,7 +102,7 @@ async function sendFCM() {
             ? item.payDate.slice(8) * 1 - 3 + 30
             : item.payDate.slice(8) * 1 - 3; // 3일 전에 전송
 
-        schedule.scheduleJob(`45 23 ${payDateToNum} * *`, function () {
+        schedule.scheduleJob(`00 20 ${payDateToNum} * *`, function () {
           admin
             .messaging()
             .send(message)

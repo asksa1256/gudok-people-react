@@ -114,7 +114,7 @@ export default function Modal(props) {
 
     const newData = {
       title: title,
-      price: price,
+      price: price * 1,
       payDate: payDate,
       free: !free ? 0 : freePeriod,
       sharing: !share ? 0 : shareCount,
