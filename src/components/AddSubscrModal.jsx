@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { AppContext } from "../App";
 import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 import "firebase/compat/auth";
@@ -31,6 +32,7 @@ export default function Modal(props) {
   const [shareCount, setShareCount] = useState(2);
   const [free, setFree] = useState(false);
   const [share, setShare] = useState(false);
+  const deviceToken = useContext(AppContext);
   const [platformImgUrl, setPlatformImgUrl] = useState("");
   const [platforms, setPlatforms] = useState("");
   const [searchTitleForm, setSearchTitleForm] = useState(false);
@@ -117,6 +119,7 @@ export default function Modal(props) {
       free: !free ? 0 : freePeriod,
       sharing: !share ? 0 : shareCount,
       imgUrl: platformImgUrl,
+      token: deviceToken,
     };
 
     // MainPage로 데이터 전달

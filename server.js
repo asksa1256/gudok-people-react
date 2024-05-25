@@ -46,24 +46,55 @@ app.get("*", (res, req) => {
 // FCM 보내기 함수
 async function sendFCM() {
   // user 컬렉션의 전체 데이터 읽기
-  await db
-    .collection("user")
-    .get()
-    .then((snapshot) => {
-      snapshot.forEach((doc) => {
-        // user 컬렉션에서 토큰값 불러오기
-        console.log(doc.data().token);
+  const collectionRef = db.collection("user");
+  const snapshot = await collectionRef.get();
+
+  const docs = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  //하위 컬렉션의 전체 데이터 읽기
+  if (docs.length > 0) {
+    const subCollectionsDataPromises = docs.map(async (doc) => {
+      const subCollectionRef = collectionRef
+        .doc(doc.id)
+        .collection("subscriptions");
+      const subCollectionSnapshot = await subCollectionRef.get();
+
+      const subDocs = subCollectionSnapshot.docs.map((subDoc) => ({
+        id: subDoc.id,
+        ...subDoc.data(),
+      }));
+
+      return { [doc.id]: subDocs };
+    });
+
+    const subCollectionsDataArray = await Promise.all(
+      subCollectionsDataPromises
+    );
+
+    const subCollectionsDataObject = subCollectionsDataArray.reduce(
+      (acc, subCollection) => {
+        return { ...acc, ...subCollection };
+      },
+      {}
+    );
+
+    // 각 user의 subscriptions 컬렉션에 저장된 구독 정보 데이터 읽기
+    for (const key in subCollectionsDataObject) {
+      const dataArray = subCollectionsDataObject[key];
+      dataArray.forEach((item) => {
         const message = {
           notification: {
-            title: "넷플릭스", // doc.data().title
-            body: "04-26에 5,500원이 자동 결제됩니다.", // doc.data().date, doc.data().price,
+            title: `${item.title}`,
+            body: `${item.payDate}에 ${item.price}원이 자동 결제됩니다.`,
           },
           // 푸시 알림 수신 대상 등 설정
-          // token, topic 등
-          // 예: token: '사용자 토큰'
-          token: doc.data().token,
+          token: item.token,
         };
 
+        // 저장된 구독 정보 기반 웹 푸시 알림 전송
         admin
           .messaging()
           .send(message)
@@ -73,11 +104,17 @@ async function sendFCM() {
           .catch((error) => {
             console.error("Error sending message:", error);
           });
+        // console.log(
+        //   `${item.token}기기로 전송: ${item.title}: ${item.payDate}에 ${item.price}원 자동결제 예정입니다.`
+        // );
       });
-    });
+    }
+  }
 }
 
+sendFCM();
+
 // 서버에서 설정한 시간에 FCM 푸시 => 터미널에서 node server.js 로 서버 실행시키면 작동.
-schedule.scheduleJob("55 18 * * *", function () {
+schedule.scheduleJob("32 22 * * *", function () {
   sendFCM();
 });
