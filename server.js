@@ -94,24 +94,26 @@ async function sendFCM() {
           token: item.token,
         };
 
-        // 저장된 구독 정보 기반 웹 푸시 알림 전송
-        admin
-          .messaging()
-          .send(message)
-          .then((response) => {
-            console.log("Successfully sent message:", response);
-          })
-          .catch((error) => {
-            console.error("Error sending message:", error);
-          });
+        // 저장된 구독 정보의 payDate 기반 웹 푸시 알림 전송
+        const payDateToNum =
+          item.payDate.slice(8) * 1 - 3 <= 0
+            ? item.payDate.slice(8) * 1 - 3 + 30
+            : item.payDate.slice(8) * 1 - 3; // 3일 전에 전송
+
+        schedule.scheduleJob(`45 23 ${payDateToNum} * *`, function () {
+          admin
+            .messaging()
+            .send(message)
+            .then((response) => {
+              console.log("Successfully sent message:", response);
+            })
+            .catch((error) => {
+              console.error("Error sending message:", error);
+            });
+        });
       });
     }
   }
 }
 
 sendFCM();
-
-// 서버에서 설정한 시간에 FCM 푸시 => 터미널에서 node server.js 로 서버 실행시키면 작동.
-schedule.scheduleJob("32 22 * * *", function () {
-  sendFCM();
-});

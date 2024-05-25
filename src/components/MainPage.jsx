@@ -31,52 +31,7 @@ export default function MainPage(props) {
   const [showModal, setShowModal] = useState(false);
   const [subscriptionData, setSubscriptionData] = useState([]);
   const [docId, setDocId] = useState(null);
-  const [token, setToken] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
-
-  // 로그인 시 토큰 갱신
-  const onTokenRefresh = () => {
-    getToken(messaging, {
-      vapidKey:
-        "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
-    })
-      .then((refreshedToken) => {
-        // 서버에 있던 기존 토큰 갱신
-        try {
-          const docRef = firestore.collection("user").doc(docId);
-          docRef.update({
-            token: refreshedToken,
-          });
-
-          // 'users' 하위 컬렉션 'subscriptions'에서 모든 문서 가져오기
-          docRef
-            .collection("subscriptions")
-            .get()
-            .then((querySnapshot) => {
-              querySnapshot.forEach((doc) => {
-                // 문서의 'token' 필드값 갱신
-                docRef
-                  .collection("subscriptions")
-                  .doc(doc.id)
-                  .update({
-                    token: refreshedToken,
-                  })
-                  .then(() => {
-                    // console.log("Document successfully updated!");
-                  })
-                  .catch((error) => {
-                    console.error("Error updating document: ", error);
-                  });
-              });
-            });
-        } catch (error) {
-          console.error("Error updating document field: ", error);
-        }
-      })
-      .catch((error) => {
-        console.error("FCM 토큰 갱신 중 오류 발생:", error);
-      });
-  };
 
   // 구독 정보 불러오기
   const fetchData = () => {
@@ -89,6 +44,49 @@ export default function MainPage(props) {
         const doc = snapshot.docs[0]; // 해당 계정의 docId값
         setDocId(doc.id);
 
+        // 로그인 할 때마다 토큰 갱신 처리
+        getToken(messaging, {
+          vapidKey:
+            "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
+        })
+          .then((refreshedToken) => {
+            // 서버에 있던 기존 토큰 갱신
+            try {
+              const docRef = firestore.collection("user").doc(doc.id);
+              docRef.update({
+                token: refreshedToken,
+              });
+
+              // 'users' 하위 컬렉션 'subscriptions'의 모든 데이터 조회
+              docRef
+                .collection("subscriptions")
+                .get()
+                .then((querySnapshot) => {
+                  querySnapshot.forEach((doc) => {
+                    // 각 문서의 'token' 필드값 갱신
+                    docRef
+                      .collection("subscriptions")
+                      .doc(doc.id)
+                      .update({
+                        token: refreshedToken,
+                      })
+                      .then(() => {
+                        // console.log("Document successfully updated!");
+                      })
+                      .catch((error) => {
+                        console.error("Error updating document: ", error);
+                      });
+                  });
+                });
+            } catch (error) {
+              console.error("Error updating document field: ", error);
+            }
+          })
+          .catch((error) => {
+            console.error("FCM 토큰 갱신 중 오류 발생:", error);
+          });
+
+        // 구독 정보 조회
         const subCollectionSnapshot = await db
           .collection("user")
           .doc(doc.id)
@@ -110,7 +108,6 @@ export default function MainPage(props) {
     const user = getAuth().currentUser;
     setCurrentUser(user);
     fetchData();
-    onTokenRefresh();
   }, []);
 
   // db에 새 구독 정보 추가
