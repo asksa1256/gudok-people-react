@@ -53,6 +53,7 @@ export default function MainPage(props) {
           .then((refreshedToken) => {
             // 서버에 있던 기존 토큰 갱신
             try {
+              // console.log("refreshedToken: " + refreshedToken);
               const docRef = firestore.collection("user").doc(doc.id);
               docRef.update({
                 token: refreshedToken,

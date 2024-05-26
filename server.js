@@ -43,79 +43,163 @@ app.get("*", (res, req) => {
   req.sendFile(path.join(__dirname, "/build/index.html"));
 });
 
+// 현재 날짜 구하는 함수
+function getCurrentDate() {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+// 초기 날짜 설정
+let currentDate = getCurrentDate();
+let currentMonth;
+
+// 자정을 계산하는 함수
+function getNextMidnight() {
+  const now = new Date();
+  const nextMidnight = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1, // 다음 날
+    0,
+    0,
+    0,
+    0 // 00:00:00.000
+  );
+  return nextMidnight;
+}
+
+// 자정에 날짜를 갱신하는 함수
+function scheduleMidnightUpdate() {
+  const now = new Date();
+  const nextMidnight = getNextMidnight();
+  const timeUntilMidnight = nextMidnight - now;
+
+  setTimeout(() => {
+    currentDate = getCurrentDate();
+    currentMonth = currentDate.slice(5, 7);
+
+    // 자정 갱신 후 매일 24시간마다 갱신
+    setInterval(() => {
+      currentDate = getCurrentDate();
+      currentMonth = currentDate.slice(5, 7);
+      console.log(`Updated current date: ${currentDate}`);
+    }, 24 * 60 * 60 * 1000); // 24시간 후
+  }, timeUntilMidnight);
+}
+scheduleMidnightUpdate();
+
 // FCM 보내기 함수
 async function sendFCM() {
   // user 컬렉션의 전체 데이터 읽기
   const collectionRef = db.collection("user");
-  const snapshot = await collectionRef.get();
 
-  const docs = snapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  }));
+  // 파이어스토어 데이터 업데이트 실시간 체크
+  collectionRef.onSnapshot((snapshot) => {
+    snapshot.docChanges().forEach((change) => {
+      if (change.type === "added") {
+        const newDocRef = change.doc.ref;
+        const subCollectionRef = newDocRef.collection("subscriptions");
 
-  //하위 컬렉션의 전체 데이터 읽기
-  if (docs.length > 0) {
-    const subCollectionsDataPromises = docs.map(async (doc) => {
-      const subCollectionRef = collectionRef
-        .doc(doc.id)
-        .collection("subscriptions");
-      const subCollectionSnapshot = await subCollectionRef.get();
+        subCollectionRef.onSnapshot((subSnapshot) => {
+          subSnapshot.docChanges().forEach((subChange) => {
+            const message = {
+              notification: {
+                title: `${subChange.doc.data().title}`,
+                body: `${subChange.doc.data().payDate}일에 ${subChange.doc
+                  .data()
+                  .price.toLocaleString("ko-KR")}원이 자동 결제됩니다.`,
+              },
+              // 푸시 알림 수신 대상 등 설정
+              token: subChange.doc.data().token,
+            };
 
-      const subDocs = subCollectionSnapshot.docs.map((subDoc) => ({
-        id: subDoc.id,
-        ...subDoc.data(),
-      }));
+            // 저장된 구독 정보의 payDate 기반 사전알림 날짜 변수 설정
+            const payMonthStr = subChange.doc.data().payDate.slice(5, 7);
+            const payDateNum =
+              subChange.doc.data().payDate.slice(8) * 1 - 3 <= 0
+                ? subChange.doc.data().payDate.slice(8) * 1 - 3 + 30
+                : subChange.doc.data().payDate.slice(8) * 1 - 3; // 3일 전에 전송
 
-      return { [doc.id]: subDocs };
-    });
-
-    const subCollectionsDataArray = await Promise.all(
-      subCollectionsDataPromises
-    );
-
-    const subCollectionsDataObject = subCollectionsDataArray.reduce(
-      (acc, subCollection) => {
-        return { ...acc, ...subCollection };
-      },
-      {}
-    );
-
-    // 각 user의 subscriptions 컬렉션에 저장된 구독 정보 데이터 읽기
-    for (const key in subCollectionsDataObject) {
-      const dataArray = subCollectionsDataObject[key];
-      dataArray.forEach((item) => {
-        const message = {
-          notification: {
-            title: `${item.title}`,
-            body: `${item.payDate}일에 ${item.price.toLocaleString(
-              "ko-KR"
-            )}원이 자동 결제됩니다.`,
-          },
-          // 푸시 알림 수신 대상 등 설정
-          token: item.token,
-        };
-
-        // 저장된 구독 정보의 payDate 기반 웹 푸시 알림 전송
-        const payDateToNum =
-          item.payDate.slice(8) * 1 - 3 <= 0
-            ? item.payDate.slice(8) * 1 - 3 + 30
-            : item.payDate.slice(8) * 1 - 3; // 3일 전에 전송
-
-        schedule.scheduleJob(`00 20 ${payDateToNum} * *`, function () {
-          admin
-            .messaging()
-            .send(message)
-            .then((response) => {
-              console.log("Successfully sent message:", response);
-            })
-            .catch((error) => {
-              console.error("Error sending message:", error);
-            });
+            // 이번 달 자동결제에 해당될 경우에만 웹 푸시 알림 전송
+            if (currentMonth === payMonthStr) {
+              schedule.scheduleJob(`40 23 ${payDateNum} * *`, function () {
+                admin
+                  .messaging()
+                  .send(message)
+                  .then((response) => {
+                    console.log("Successfully sent message:", response);
+                  })
+                  .catch((error) => {
+                    console.error("Error sending message:", error);
+                  });
+              });
+            }
+          });
         });
-      });
-    }
-  }
+      }
+    });
+  });
 }
 
 sendFCM();
+
+// 다음달 날짜를 구하는 함수
+function getNextMonthDate(dateStr) {
+  let parts = dateStr.split("-");
+  let year = parts[0];
+  let month = parseInt(parts[1], 10);
+  let day = parts[2];
+
+  month += 1;
+
+  // 월이 13이 되면 연도에 1을 더하고 월을 1로 설정
+  if (month > 12) {
+    month = 1;
+    year = parseInt(year, 10) + 1;
+  }
+
+  // 월이 한 자리 숫자인 경우 두 자리로 변환
+  let newMonth = month < 10 ? "0" + month : month.toString();
+
+  return `${year}-${newMonth}-${day}`;
+}
+
+// payDate 갱신 함수
+async function updatePayDate() {
+  const collectionRef = db.collection("user");
+
+  collectionRef.onSnapshot((snapshot) => {
+    snapshot.docChanges().forEach((change) => {
+      if (change.type === "added") {
+        const newDocRef = change.doc.ref;
+        const subCollectionRef = newDocRef.collection("subscriptions");
+
+        subCollectionRef.onSnapshot((subSnapshot) => {
+          subSnapshot.docChanges().forEach((subChange) => {
+            // payDate가 currentDate보다 작을 경우 payDate 갱신
+            if (currentDate > subChange.doc.data().payDate) {
+              let updatedMonthPayDate = getNextMonthDate(
+                subChange.doc.data().payDate
+              );
+
+              subChange.doc.ref
+                .update({ payDate: updatedMonthPayDate })
+                .then(() => {
+                  // console.log(`updated to completed: ${updatedMonthPayDate}`);
+                })
+                .catch((error) => {
+                  console.error(`Error updating document: `, error);
+                });
+            }
+          });
+        });
+      }
+    });
+  });
+}
+
+updatePayDate();
