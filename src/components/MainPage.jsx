@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 import "firebase/compat/auth";
@@ -11,7 +11,6 @@ import SubscriptionItem from "./SubscriptionItem";
 import AddSubscrModal from "./AddSubscrModal";
 import UpdateSubscrModal from "./UpdateSubscrModal";
 import Dockbar from "./Dockbar";
-import { update } from "firebase/database";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -29,13 +28,14 @@ const db = firebase.firestore();
 const messaging = getMessaging();
 const firestore = firebase.firestore();
 
-export default function MainPage(props) {
+export default function MainPage() {
   const [showModal, setShowModal] = useState(false);
   const [subscriptionData, setSubscriptionData] = useState([]);
   const [docId, setDocId] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
   const [targetData, setTargetData] = useState({});
+  const navigate = useNavigate();
 
   // 구독 정보 불러오기
   const fetchData = () => {
@@ -114,12 +114,6 @@ export default function MainPage(props) {
     });
   };
 
-  useEffect(() => {
-    const user = getAuth().currentUser;
-    setCurrentUser(user);
-    fetchData();
-  }, []);
-
   // db에 새 구독 정보 추가
   const onAddData = async (newData) => {
     try {
@@ -171,7 +165,60 @@ export default function MainPage(props) {
       // 수정 후 리스트 새로고침
       fetchData();
     } catch (error) {
-      console.error("컬렉션 추가 중 오류 발생:", error);
+      console.error("컬렉션 수정 중 오류 발생:", error);
+    }
+  };
+
+  // 구독 해지
+  const deleteItemHandler = (targetData) => {
+    const deleteConfirm = window.confirm("구독 해지 링크로 이동합니다.");
+    if (!deleteConfirm) return;
+
+    if (targetData.cancelLink) {
+      // 구독 해지 링크로 이동
+      window.open(`${targetData.cancelLink}`);
+    } else {
+      alert(
+        "연결된 해지 링크가 없습니다. 별도로 구독을 해지한 후 새 알림창에서 '확인'을 눌러주세요."
+      );
+    }
+
+    const cancelSubscriptionConfirm = window.confirm(
+      "구독을 해지하셨으면 '확인'을 눌러주세요."
+    );
+    if (!cancelSubscriptionConfirm) return;
+
+    // db에서 구독 정보 삭제
+    try {
+      const targetId = targetData.id;
+      const docRef = firestore.collection("user").doc(docId);
+
+      docRef
+        .collection("subscriptions")
+        .get()
+        .then((querySnapshot) => {
+          let totalPrice = 0;
+          docRef
+            .collection("subscriptions")
+            .doc(targetId)
+            .delete()
+            .then(() => {
+              // console.log("Document successfully updated!");
+            })
+            .catch((error) => {
+              console.error("Error updating document: ", error);
+            });
+
+          // 총 구독료 갱신
+          querySnapshot.forEach((doc) => {
+            totalPrice += doc.data().price;
+            setTotalPrice(totalPrice);
+          });
+        });
+      alert("삭제되었습니다.");
+      fetchData();
+    } catch (error) {
+      console.error("컬렉션 삭제 중 오류 발생:", error);
     }
   };
 
@@ -184,13 +231,15 @@ export default function MainPage(props) {
     setTargetData(targetData);
   };
 
-  const deleteItemHandler = () => {
-    alert("삭제하시겠습니까?");
-  };
-
   const closeModal = () => {
     setShowModal(false);
   };
+
+  useEffect(() => {
+    const user = getAuth().currentUser;
+    setCurrentUser(user);
+    fetchData();
+  }, []);
 
   return (
     <div className="align-center">
@@ -251,8 +300,9 @@ export default function MainPage(props) {
                   sharing={data.sharing}
                   free={data.free}
                   imgUrl={data.imgUrl}
+                  cancelLink={data.cancelLink}
                   showModifyModal={showModifyModal}
-                  deleteItem={deleteItemHandler}
+                  deleteItem={() => deleteItemHandler(data)}
                 />
               ))}
             </ul>

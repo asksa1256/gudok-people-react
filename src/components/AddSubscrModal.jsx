@@ -36,6 +36,7 @@ export default function Modal(props) {
   const deviceToken = useContext(AppContext);
   const [platformImgUrl, setPlatformImgUrl] = useState("");
   const [platforms, setPlatforms] = useState("");
+  const [platformCancelLink, setPlatformCancelLink] = useState("");
   const [searchTitleForm, setSearchTitleForm] = useState(false);
 
   const activateFree = () => {
@@ -44,14 +45,6 @@ export default function Modal(props) {
 
   const notFree = () => {
     setFree(false);
-  };
-
-  const activateShare = () => {
-    setShare(true);
-  };
-
-  const notShare = () => {
-    setShare(false);
   };
 
   // 구독 플랫폼 정보 불러오기
@@ -101,9 +94,10 @@ export default function Modal(props) {
     }
   });
 
-  const setPlatformInfo = (name, url) => {
+  const setPlatformInfo = (name, url, cancelLink) => {
     setTitle(name);
     setPlatformImgUrl(url);
+    setPlatformCancelLink(cancelLink);
     setSearchTitleForm(false);
   };
 
@@ -121,6 +115,7 @@ export default function Modal(props) {
       sharing: !share ? 0 : shareCount,
       imgUrl: platformImgUrl,
       token: deviceToken,
+      cancelLink: platformCancelLink,
     };
 
     // MainPage로 데이터 전달
@@ -153,7 +148,11 @@ export default function Modal(props) {
                 <li
                   key={platform.engName}
                   onClick={() =>
-                    setPlatformInfo(platform.name, platform.imgUrl)
+                    setPlatformInfo(
+                      platform.name,
+                      platform.imgUrl,
+                      platform.cancleLink
+                    )
                   }
                 >
                   <img src={platform.imgUrl} alt="" />
