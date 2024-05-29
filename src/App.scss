@@ -183,6 +183,11 @@ section {
       background: #ae6cdc;
       color: #fff;
     }
+
+    &#subscription-price:focus {
+      background: #fff;
+      color: #000;
+    }
   }
 
   .btn-sm {
@@ -209,6 +214,12 @@ section {
 
   .options {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    label {
+      margin-bottom: 0;
+    }
 
     * + * {
       margin-left: 8px;

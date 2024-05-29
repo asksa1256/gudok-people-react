@@ -36,6 +36,7 @@ export default function UpdateSubscrModal(props) {
   const deviceToken = useContext(AppContext);
   const [platformImgUrl, setPlatformImgUrl] = useState("");
   const [platforms, setPlatforms] = useState("");
+  const [platformCancelLink, setPlatformCancelLink] = useState("");
   const [searchTitleForm, setSearchTitleForm] = useState(false);
 
   const setExistingData = () => {
@@ -156,7 +157,7 @@ export default function UpdateSubscrModal(props) {
       return;
     }
 
-    if (freePeriod > 0) setFree(true);
+    // if (freePeriod > 0) setFree(true);
 
     const newData = {
       id: props.id,
@@ -167,6 +168,7 @@ export default function UpdateSubscrModal(props) {
       sharing: shareCount * 1,
       imgUrl: platformImgUrl,
       token: deviceToken,
+      cancelLink: platformCancelLink,
     };
 
     // MainPage로 데이터 전달
@@ -256,7 +258,7 @@ export default function UpdateSubscrModal(props) {
                 min="1"
                 value={freePeriod}
                 onChange={(e) => setFreePeriod(e.target.value.trim())}
-                className={props.freePeriod ? "active" : undefined}
+                className={props.free ? "active" : undefined}
                 onClick={clickRadioHandler}
               />
             </label>
