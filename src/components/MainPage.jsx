@@ -140,33 +140,30 @@ export default function MainPage(props) {
   // db에 구독 정보 업데이트
   const onUpdateData = async (updateData) => {
     try {
-      console.log(updateData);
-
+      const targetId = updateData.id;
       const docRef = firestore.collection("user").doc(docId);
+
       docRef
         .collection("subscriptions")
         .get()
         .then((querySnapshot) => {
           let totalPrice = 0;
-          console.log(querySnapshot);
-          // querySnapshot.forEach((doc) => {
-          //   docRef
-          //     .collection("subscriptions")
-          //     .doc(doc.id)
-          //     .update({
-          //       token: refreshedToken,
-          //     })
-          //     .then(() => {
-          //       // console.log("Document successfully updated!");
-          //     })
-          //     .catch((error) => {
-          //       console.error("Error updating document: ", error);
-          //     });
+          docRef
+            .collection("subscriptions")
+            .doc(targetId)
+            .update(updateData)
+            .then(() => {
+              // console.log("Document successfully updated!");
+            })
+            .catch((error) => {
+              console.error("Error updating document: ", error);
+            });
 
-          //   // 총 구독료 갱신
-          //   totalPrice += doc.data().price;
-          //   setTotalPrice(totalPrice);
-          // });
+          // 총 구독료 갱신
+          querySnapshot.forEach((doc) => {
+            totalPrice += doc.data().price;
+            setTotalPrice(totalPrice);
+          });
         });
 
       alert("수정되었습니다.");
@@ -209,6 +206,7 @@ export default function MainPage(props) {
           close={closeModal}
           modalTitle={"구독 정보 수정"}
           updateData={onUpdateData}
+          id={targetData.id}
           title={targetData.title}
           price={targetData.price}
           payDate={targetData.payDate}
@@ -246,6 +244,7 @@ export default function MainPage(props) {
               {subscriptionData.map((data) => (
                 <SubscriptionItem
                   key={data.id}
+                  id={data.id}
                   title={data.title}
                   price={data.price}
                   payDate={data.payDate}

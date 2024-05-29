@@ -3,6 +3,7 @@ import React from "react";
 export default function SubscriptionItem(props) {
   const itemModifyHandler = () => {
     const targetData = {
+      id: props.id,
       title: props.title,
       price: props.price * 1,
       payDate: props.payDate,

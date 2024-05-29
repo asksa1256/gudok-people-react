@@ -159,6 +159,7 @@ export default function UpdateSubscrModal(props) {
     if (freePeriod > 0) setFree(true);
 
     const newData = {
+      id: props.id,
       title: title,
       price: price * 1,
       payDate: payDate,
