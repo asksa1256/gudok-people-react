@@ -26,6 +26,7 @@
   overflow: auto;
 
   .subscr-list-item {
+    position: relative;
     display: flex;
 
     + li {
@@ -62,9 +63,9 @@
     }
 
     .payment-wrap {
-      display: flex;
-      flex-direction: column;
-      margin-left: auto;
+      position: absolute;
+      right: 0;
+      bottom: 2px;
       font-size: 14px;
 
       .sharing {
@@ -78,7 +79,6 @@
       }
 
       .payment-due {
-        margin-top: 34px;
         margin-left: auto;
         color: #6b6b6b;
         font-size: 13px;
@@ -87,6 +87,15 @@
           margin-right: 4px;
           font-weight: 700;
         }
+      }
+    }
+
+    .actions {
+      position: absolute;
+      right: 0;
+
+      button + button {
+        margin-left: 8px;
       }
     }
   }

@@ -171,6 +171,20 @@ section {
     }
   }
 
+  input[type="radio"] {
+    width: 20px;
+    height: 20px;
+  }
+
+  input[type="number"] {
+    cursor: pointer;
+
+    &:focus {
+      background: #ae6cdc;
+      color: #fff;
+    }
+  }
+
   .btn-sm {
     position: absolute;
     right: 8px;

@@ -24,13 +24,13 @@ if (!firebase.apps.length) {
 
 const db = firebase.firestore();
 
-export default function Modal(props) {
+export default function UpdateSubscrModal(props) {
   const { open, close, modalTitle } = props; // 모달 동작 관련
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState(0);
   const [payDate, setPayDate] = useState("");
-  const [freePeriod, setFreePeriod] = useState(30);
-  const [shareCount, setShareCount] = useState(2);
+  const [freePeriod, setFreePeriod] = useState(0);
+  const [shareCount, setShareCount] = useState(0);
   const [free, setFree] = useState(false);
   const [share, setShare] = useState(false);
   const deviceToken = useContext(AppContext);
@@ -38,20 +38,18 @@ export default function Modal(props) {
   const [platforms, setPlatforms] = useState("");
   const [searchTitleForm, setSearchTitleForm] = useState(false);
 
-  const activateFree = () => {
-    setFree(true);
-  };
-
-  const notFree = () => {
-    setFree(false);
-  };
-
-  const activateShare = () => {
-    setShare(true);
-  };
-
-  const notShare = () => {
-    setShare(false);
+  const setExistingData = () => {
+    setTitle(props.title);
+    setPrice(props.price);
+    setPayDate(props.payDate);
+    if (props.free > 0) {
+      setFree(true);
+      setFreePeriod(props.free);
+    } else {
+      setFree(false);
+      setFreePeriod(0);
+    }
+    setShareCount(props.sharing);
   };
 
   // 구독 플랫폼 정보 불러오기
@@ -76,6 +74,10 @@ export default function Modal(props) {
   const [visible, setVisible] = useState(open);
 
   useEffect(() => {
+    // 기존 데이터 불러오기
+    setExistingData();
+
+    // 모달 초기 설정
     setVisible(open);
 
     // open 값이 true -> false 가 되는 것을 감지 (즉, 모달창을 닫을 때)
@@ -85,10 +87,11 @@ export default function Modal(props) {
     }
 
     fetchPlatformsData();
+
     return () => {
       setVisible(false);
     };
-  }, [visible, open]);
+  }, [visible, open, setShare, setShareCount]);
 
   if (!animate && !visible) return null;
 
@@ -107,18 +110,60 @@ export default function Modal(props) {
     setSearchTitleForm(false);
   };
 
+  const clickRadioHandler = (e) => {
+    const clickedRadio = e.target.id;
+    const shareInput = document.querySelector("#shareInput");
+    const radioShare = document.querySelector("#radioShare");
+    const freeInput = document.querySelector("#freeInput");
+    const radioFree = document.querySelector("#radioFree");
+
+    // 무료체험
+    if (clickedRadio === "radioFree") {
+      setFree(true);
+      freeInput.className = "active";
+    }
+    if (clickedRadio === "freeInput") {
+      setFree(true);
+      radioFree.checked = "true";
+      freeInput.className = "active";
+    }
+    if (clickedRadio === "radioNotFree") {
+      setFree(false);
+      setFreePeriod(0);
+      freeInput.className = "";
+    }
+
+    // 공유
+    if (clickedRadio === "radioShare") {
+      setShare(true);
+      shareInput.className = "active";
+    }
+    if (clickedRadio === "shareInput") {
+      setShare(true);
+      radioShare.checked = "true";
+      shareInput.className = "active";
+    }
+    if (clickedRadio === "radioNotShare") {
+      setShare(false);
+      setShareCount(0);
+      shareInput.className = "";
+    }
+  };
+
   const submitFormHandler = () => {
     if (title.length === 0 || price <= 0 || payDate.length === 0) {
       alert("입력되지 않은 항목이 있습니다.");
       return;
     }
 
+    if (freePeriod > 0) setFree(true);
+
     const newData = {
       title: title,
       price: price * 1,
       payDate: payDate,
-      free: !free ? 0 : freePeriod,
-      sharing: !share ? 0 : shareCount,
+      free: freePeriod * 1,
+      sharing: shareCount * 1,
       imgUrl: platformImgUrl,
       token: deviceToken,
     };
@@ -187,45 +232,63 @@ export default function Modal(props) {
         <div className="form-control">
           <label>무료 체험 (일)</label>
           <div className="options">
-            <button
-              className={!free && !props.free ? "btn-w50 active" : "btn-w50"}
-              onClick={notFree}
-            >
-              해당 없음
-            </button>
             <input
-              type="number"
-              id="freePeriod"
-              placeholder="30"
-              min="1"
-              value={freePeriod}
-              onChange={(e) => setFreePeriod(e.target.value.trim())}
-              className={free || props.free ? "active" : undefined}
-              onClick={activateFree}
+              type="radio"
+              name="free"
+              id="radioNotFree"
+              defaultChecked={!props.free}
+              onClick={clickRadioHandler}
             />
+            <label htmlFor="radioNotFree">해당 없음</label>
+            <input
+              type="radio"
+              name="free"
+              id="radioFree"
+              defaultChecked={props.free}
+              onClick={clickRadioHandler}
+            />
+            <label htmlFor="radioFree">
+              <input
+                type="number"
+                id="freeInput"
+                placeholder="1"
+                min="1"
+                value={freePeriod}
+                onChange={(e) => setFreePeriod(e.target.value.trim())}
+                className={props.freePeriod ? "active" : undefined}
+                onClick={clickRadioHandler}
+              />
+            </label>
           </div>
         </div>
         <div className="form-control">
           <label>계정 공유 (명)</label>
           <div className="options">
-            <input type="radio" name="sharing" id="noShare" />
-            <label htmlFor="noShare">해당 없음</label>
             <input
               type="radio"
               name="sharing"
-              id="share"
-              defaultChecked={props.sharing}
+              id="radioNotShare"
+              defaultChecked={!props.sharing}
+              onClick={clickRadioHandler}
             />
-            <label htmlFor="noShare">
+            <label htmlFor="radioNotShare">해당 없음</label>
+            <input
+              type="radio"
+              name="sharing"
+              id="radioShare"
+              defaultChecked={props.sharing}
+              onClick={clickRadioHandler}
+            />
+            <label htmlFor="radioShare">
               <input
                 type="number"
-                id="accountShare"
+                id="shareInput"
                 placeholder="2"
                 min="2"
                 value={shareCount}
                 onChange={(e) => setShareCount(e.target.value.trim())}
-                // className={props.sharing || share ? "active" : undefined}
-                // onClick={() => setShare(true)}
+                className={props.sharing ? "active" : undefined}
+                onClick={clickRadioHandler}
               />
             </label>
           </div>

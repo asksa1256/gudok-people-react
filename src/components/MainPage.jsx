@@ -9,7 +9,9 @@ import "firebase/compat/messaging";
 import "./MainPage.scss";
 import SubscriptionItem from "./SubscriptionItem";
 import AddSubscrModal from "./AddSubscrModal";
+import UpdateSubscrModal from "./UpdateSubscrModal";
 import Dockbar from "./Dockbar";
+import { update } from "firebase/database";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -33,6 +35,7 @@ export default function MainPage(props) {
   const [docId, setDocId] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [targetData, setTargetData] = useState({});
 
   // 구독 정보 불러오기
   const fetchData = () => {
@@ -118,7 +121,7 @@ export default function MainPage(props) {
   }, []);
 
   // db에 새 구독 정보 추가
-  const onUpdateData = async (newData) => {
+  const onAddData = async (newData) => {
     try {
       await db
         .collection("user")
@@ -134,8 +137,58 @@ export default function MainPage(props) {
     }
   };
 
+  // db에 구독 정보 업데이트
+  const onUpdateData = async (updateData) => {
+    try {
+      console.log(updateData);
+
+      const docRef = firestore.collection("user").doc(docId);
+      docRef
+        .collection("subscriptions")
+        .get()
+        .then((querySnapshot) => {
+          let totalPrice = 0;
+          console.log(querySnapshot);
+          // querySnapshot.forEach((doc) => {
+          //   docRef
+          //     .collection("subscriptions")
+          //     .doc(doc.id)
+          //     .update({
+          //       token: refreshedToken,
+          //     })
+          //     .then(() => {
+          //       // console.log("Document successfully updated!");
+          //     })
+          //     .catch((error) => {
+          //       console.error("Error updating document: ", error);
+          //     });
+
+          //   // 총 구독료 갱신
+          //   totalPrice += doc.data().price;
+          //   setTotalPrice(totalPrice);
+          // });
+        });
+
+      alert("수정되었습니다.");
+
+      // 수정 후 리스트 새로고침
+      fetchData();
+    } catch (error) {
+      console.error("컬렉션 추가 중 오류 발생:", error);
+    }
+  };
+
   const showAddSubscrModal = () => {
-    setShowModal(true);
+    setShowModal("Add");
+  };
+
+  const showModifyModal = (targetData) => {
+    setShowModal("Modify");
+    setTargetData(targetData);
+  };
+
+  const deleteItemHandler = () => {
+    alert("삭제하시겠습니까?");
   };
 
   const closeModal = () => {
@@ -146,10 +199,21 @@ export default function MainPage(props) {
     <div className="align-center">
       <section className="MainPage">
         <AddSubscrModal
-          open={showModal}
+          open={showModal === "Add"}
           close={closeModal}
           modalTitle={"새 구독 추가"}
+          updateData={onAddData}
+        />
+        <UpdateSubscrModal
+          open={showModal === "Modify"}
+          close={closeModal}
+          modalTitle={"구독 정보 수정"}
           updateData={onUpdateData}
+          title={targetData.title}
+          price={targetData.price}
+          payDate={targetData.payDate}
+          free={targetData.free}
+          sharing={targetData.sharing}
         />
         <div className="contents">
           <div className="nav-top"></div>
@@ -188,6 +252,8 @@ export default function MainPage(props) {
                   sharing={data.sharing}
                   free={data.free}
                   imgUrl={data.imgUrl}
+                  showModifyModal={showModifyModal}
+                  deleteItem={deleteItemHandler}
                 />
               ))}
             </ul>
