@@ -39,14 +39,6 @@ export default function Modal(props) {
   const [platformCancelLink, setPlatformCancelLink] = useState("");
   const [searchTitleForm, setSearchTitleForm] = useState(false);
 
-  const activateFree = () => {
-    setFree(true);
-  };
-
-  const notFree = () => {
-    setFree(false);
-  };
-
   // 구독 플랫폼 정보 불러오기
   const fetchPlatformsData = () => {
     firebase.auth().onAuthStateChanged(async (user) => {
@@ -166,7 +158,13 @@ export default function Modal(props) {
     setPrice(0);
     setPayDate("");
     setFree(false);
+    setFreePeriod(0);
     setShare(false);
+    setShareCount(0);
+    const radioNotFree = document.querySelector("#radioNotFree");
+    const radioNotShare = document.querySelector("#radioNotShare");
+    radioNotFree.checked = "true";
+    radioNotShare.checked = "true";
   };
 
   return (
