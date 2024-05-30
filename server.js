@@ -43,6 +43,10 @@ app.get("*", (res, req) => {
   req.sendFile(path.join(__dirname, "/build/index.html"));
 });
 
+app.get("https://asksa1256.github.io/", (res, req) => {
+  req.sendFile(path.join(__dirname, "/build/index.html"));
+});
+
 // 현재 날짜 구하는 함수
 function getCurrentDate() {
   const date = new Date();

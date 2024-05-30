@@ -33,6 +33,25 @@ const messaging = getMessaging();
 
 export const AppContext = createContext();
 
+function requestPermission() {
+  console.log("Requesting permission...");
+  Notification.requestPermission().then((permission) => {
+    if (permission === "granted") {
+      console.log("Notification permission granted.");
+      getToken(messaging, {
+        vapidKey:
+          "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
+      }).then((currentToken) => {
+        setDeviceToken(currentToken);
+      });
+    } else {
+      alert(
+        "알림 거부 시 자동결제 사전 알림을 받을 수 없으므로 알림 허용을 권장합니다."
+      );
+    }
+  });
+}
+
 function App() {
   const [deviceToken, setDeviceToken] = useState("");
 
@@ -46,9 +65,10 @@ function App() {
         if (currentToken) {
           setDeviceToken(currentToken);
         } else {
-          alert(
-            "알림 거부 시 자동결제 사전 알림을 받을 수 없으므로 알림 허용을 권장합니다."
-          );
+          requestPermission();
+          // alert(
+          //   "알림 거부 시 자동결제 사전 알림을 받을 수 없으므로 알림 허용을 권장합니다."
+          // );
         }
       })
       .catch((err) => {
