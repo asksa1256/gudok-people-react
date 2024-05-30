@@ -33,27 +33,27 @@ const messaging = getMessaging();
 
 export const AppContext = createContext();
 
-function requestPermission() {
-  console.log("Requesting permission...");
-  Notification.requestPermission().then((permission) => {
-    if (permission === "granted") {
-      console.log("Notification permission granted.");
-      getToken(messaging, {
-        vapidKey:
-          "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
-      }).then((currentToken) => {
-        setDeviceToken(currentToken);
-      });
-    } else {
-      alert(
-        "알림 거부 시 자동결제 사전 알림을 받을 수 없으므로 알림 허용을 권장합니다."
-      );
-    }
-  });
-}
-
 function App() {
   const [deviceToken, setDeviceToken] = useState("");
+
+  function requestPermission() {
+    console.log("Requesting permission...");
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        console.log("Notification permission granted.");
+        getToken(messaging, {
+          vapidKey:
+            "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
+        }).then((currentToken) => {
+          setDeviceToken(currentToken);
+        });
+      } else {
+        alert(
+          "알림 거부 시 자동결제 사전 알림을 받을 수 없으므로 알림 허용을 권장합니다."
+        );
+      }
+    });
+  }
 
   if (isSupported()) {
     // FCM(파이어베이스 클라우드 메시징)이 지원되지 않는 브라우저에서는 화면이 하얗게 뜨는 현상 방지
