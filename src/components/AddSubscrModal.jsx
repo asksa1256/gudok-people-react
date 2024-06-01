@@ -6,6 +6,8 @@ import "firebase/compat/auth";
 import "./AddSubscrModal.scss";
 import "./Modal.scss";
 import "../App.scss";
+import "../dateFormat";
+import dateFormat from "../dateFormat";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -139,6 +141,9 @@ export default function Modal(props) {
       return;
     }
 
+    let today = new Date();
+    const addDate = dateFormat(today);
+
     const newData = {
       title: title,
       price: price * 1,
@@ -148,6 +153,7 @@ export default function Modal(props) {
       imgUrl: platformImgUrl,
       token: deviceToken,
       cancelLink: platformCancelLink,
+      addDate: addDate,
     };
 
     // MainPage로 데이터 전달

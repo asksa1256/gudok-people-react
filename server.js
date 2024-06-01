@@ -127,20 +127,25 @@ async function sendFCM() {
               subChange.doc.data().payDate.slice(8) * 1 - 3 <= 0
                 ? subChange.doc.data().payDate.slice(8) * 1 - 3 + 30
                 : subChange.doc.data().payDate.slice(8) * 1 - 3; // 3일 전에 전송
+            const addedHour = subChange.doc.data().addDate.slice(-8, -6) * 1;
+            const addedMin = subChange.doc.data().addDate.slice(-5, -3) * 1;
 
             // 이번 달 자동결제에 해당될 경우에만 웹 푸시 알림 전송
             if (currentMonth === payMonthStr) {
-              schedule.scheduleJob(`40 23 ${payDateNum} * *`, function () {
-                admin
-                  .messaging()
-                  .send(message)
-                  .then((response) => {
-                    console.log("Successfully sent message:", response);
-                  })
-                  .catch((error) => {
-                    console.error("Error sending message:", error);
-                  });
-              });
+              schedule.scheduleJob(
+                `${addedHour} ${addedMin + 1} ${payDateNum} * *`,
+                function () {
+                  admin
+                    .messaging()
+                    .send(message)
+                    .then((response) => {
+                      console.log("Successfully sent message:", response);
+                    })
+                    .catch((error) => {
+                      console.error("Error sending message:", error);
+                    });
+                }
+              );
             }
           });
         });
