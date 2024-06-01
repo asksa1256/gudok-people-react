@@ -6,6 +6,7 @@ import "firebase/compat/auth";
 import "./AddSubscrModal.scss";
 import "./Modal.scss";
 import "../App.scss";
+import dateFormat from "../dateFormat";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -157,7 +158,8 @@ export default function UpdateSubscrModal(props) {
       return;
     }
 
-    // if (freePeriod > 0) setFree(true);
+    let today = new Date();
+    const addDate = dateFormat(today);
 
     const newData = {
       id: props.id,
@@ -169,6 +171,7 @@ export default function UpdateSubscrModal(props) {
       imgUrl: platformImgUrl,
       token: deviceToken,
       cancelLink: platformCancelLink,
+      addDate: addDate,
     };
 
     // MainPage로 데이터 전달

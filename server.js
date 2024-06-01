@@ -32,21 +32,6 @@ app.use(
   })
 );
 
-app.use(express.static(path.join(__dirname, "/build")));
-
-// 메인페이지 접속 시 build 폴더의 index.html 전송
-app.get("/", (res, req) => {
-  req.sendFile(path.join(__dirname, "/build/index.html"));
-});
-
-app.get("*", (res, req) => {
-  req.sendFile(path.join(__dirname, "/build/index.html"));
-});
-
-app.get("https://asksa1256.github.io/", (res, req) => {
-  req.sendFile(path.join(__dirname, "/build/index.html"));
-});
-
 // 현재 날짜 구하는 함수
 function getCurrentDate() {
   const date = new Date();
@@ -133,7 +118,7 @@ async function sendFCM() {
             // 이번 달 자동결제에 해당될 경우에만 웹 푸시 알림 전송
             if (currentMonth === payMonthStr) {
               schedule.scheduleJob(
-                `${addedHour} ${addedMin + 1} ${payDateNum} * *`,
+                `${addedMin} ${addedHour} ${payDateNum} * *`,
                 function () {
                   admin
                     .messaging()
@@ -212,3 +197,18 @@ async function updatePayDate() {
 }
 
 updatePayDate();
+
+app.use(express.static(path.join(__dirname, "/build")));
+
+// 메인페이지 접속 시 build 폴더의 index.html 전송
+app.get("/", (res, req) => {
+  req.sendFile(path.join(__dirname, "/build/index.html"));
+});
+
+app.get("*", (res, req) => {
+  req.sendFile(path.join(__dirname, "/build/index.html"));
+});
+
+app.get("https://asksa1256.github.io/", (res, req) => {
+  req.sendFile(path.join(__dirname, "/build/index.html"));
+});
