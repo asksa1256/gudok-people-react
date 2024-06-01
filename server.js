@@ -115,17 +115,14 @@ async function sendFCM() {
                 ? subChange.doc.data().payDate.slice(8) * 1 - 3 + 30
                 : subChange.doc.data().payDate.slice(8) * 1 - 3; // 3일 전에 전송
 
-            if (subChange.doc.data().addDate) {
-              addedHour = subChange.doc.data().addDate.slice(-8, -6) * 1;
-              addedMin = subChange.doc.data().addDate.slice(-5, -3) * 1;
-            }
+            if (!subChange.doc.data().addDate) return;
+            addedHour = subChange.doc.data().addDate.slice(-8, -6) * 1;
+            addedMin = subChange.doc.data().addDate.slice(-5, -3) * 1;
 
             // 이번 달에 해당될 경우에만 알림 전송
             if (currentMonth === payMonthStr) {
               schedule.scheduleJob(
-                `${addedMin ? addedMin + 1 : 30} ${
-                  addedHour ? addedHour : 14
-                } ${payDateNum} * *`,
+                `${addedMin + 1} ${addedHour} ${payDateNum} * *`,
                 function () {
                   admin
                     .messaging()
