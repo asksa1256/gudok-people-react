@@ -21,6 +21,10 @@ admin.initializeApp({
 // Firestore DB 불러오기
 const db = getFirestore();
 
+app.listen(3000, function () {
+  console.log("listening on 3000");
+});
+
 // CORS 이슈 방지
 app.use(express.json());
 const cors = require("cors");
@@ -202,17 +206,17 @@ async function updatePayDate() {
 
 updatePayDate();
 
-app.use(express.static(path.join(__dirname, "/build")));
+app.use(express.static(path.join(__dirname, "build")));
 
 // 메인페이지 접속 시 build 폴더의 index.html 전송
 app.get("/", (res, req) => {
-  req.sendFile(path.join(__dirname, "/build/index.html"));
+  req.sendFile(path.join(__dirname, "build/index.html"));
 });
 
 app.get("*", (res, req) => {
-  req.sendFile(path.join(__dirname, "/build/index.html"));
+  req.sendFile(path.join(__dirname, "build/index.html"));
 });
 
-app.get("https://asksa1256.github.io/", (res, req) => {
-  req.sendFile(path.join(__dirname, "/build/index.html"));
+app.get("https://asksa1256.github.io", (res, req) => {
+  req.sendFile(path.join(__dirname, "build/index.html"));
 });
