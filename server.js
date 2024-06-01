@@ -123,7 +123,7 @@ async function sendFCM() {
             // 이번 달에 해당될 경우에만 알림 전송
             if (currentMonth === payMonthStr) {
               schedule.scheduleJob(
-                `${addedMin ? addedMin : 30} ${
+                `${addedMin ? addedMin + 1 : 30} ${
                   addedHour ? addedHour : 14
                 } ${payDateNum} * *`,
                 function () {
