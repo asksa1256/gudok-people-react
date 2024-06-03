@@ -55,9 +55,18 @@ section {
 
   &-dl {
     margin: 0 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #ddd;
+    &:last-child {
+      border: 0;
+    }
 
     dt {
       margin-bottom: 8px;
+
+      .text-btn {
+        color: #ae6cdc;
+      }
     }
     dd {
       margin-bottom: 24px;

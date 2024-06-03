@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "../App";
 import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 import "firebase/compat/auth";
 import { getAuth } from "firebase/auth";
+import { getMessaging, getToken } from "firebase/messaging";
 import Dockbar from "./Dockbar";
 import "./SettingsPage.scss";
 
@@ -20,8 +22,13 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
+const messaging = getMessaging();
+const db = firebase.firestore();
+
 export default function SettingsPage() {
   const [user, setUser] = useState(null); // 인증된 사용자 정보 저장
+  const [pushPermitted, setPushPermitted] = useState(null);
+  const deviceToken = useContext(AppContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,13 +36,15 @@ export default function SettingsPage() {
     const authService = getAuth();
     setUser(authService.currentUser);
 
+    deviceToken ? setPushPermitted(true) : setPushPermitted(false);
+
     // 사용자 상태 변경 이벤트 리스너 추가
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       setUser(user);
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [deviceToken]);
 
   const signInOutHandler = () => {
     if (user) {
@@ -51,6 +60,52 @@ export default function SettingsPage() {
     } else {
       navigate("/");
     }
+  };
+
+  const requestPermission = async () => {
+    const snapshot = await db
+      .collection("user")
+      .where("email", "==", user.email)
+      .get();
+    const doc = snapshot.docs[0];
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        console.log("Notification permission granted.");
+        getToken(messaging, {
+          vapidKey:
+            "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
+        }).then((currentToken) => {
+          try {
+            const docRef = db.collection("user").doc(doc.id);
+            docRef.update({
+              token: currentToken,
+            });
+            docRef
+              .collection("subscriptions")
+              .get()
+              .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                  // 각 문서의 'token' 필드값 갱신
+                  docRef
+                    .collection("subscriptions")
+                    .doc(doc.id)
+                    .update({
+                      token: currentToken,
+                    })
+                    .then(() => {
+                      // console.log("Document successfully updated!");
+                    })
+                    .catch((error) => {
+                      console.error("Error updating document: ", error);
+                    });
+                });
+              });
+          } catch (error) {
+            console.error("Error updating document field: ", error);
+          }
+        });
+      }
+    });
   };
 
   return (
@@ -70,6 +125,21 @@ export default function SettingsPage() {
                 {user ? "로그아웃" : "로그인"}
               </button>
             </dt>
+          </dl>
+          <div className="sub-title">알림 설정</div>
+          <dl className="contents-dl">
+            <dd>
+              {pushPermitted
+                ? "알림 활성화 상태입니다."
+                : "알림 비활성화 상태입니다."}
+            </dd>
+            {!pushPermitted && (
+              <dt>
+                <button className="text-btn" onClick={requestPermission}>
+                  알림 허용하기
+                </button>
+              </dt>
+            )}
           </dl>
         </div>
         <Dockbar active="settings" />
