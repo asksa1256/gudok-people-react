@@ -68,9 +68,6 @@ function App() {
             setDeviceToken(currentToken);
           } else {
             requestPermission();
-            // alert(
-            //   "알림 거부 시 자동결제 사전 알림을 받을 수 없으므로 알림 허용을 권장합니다."
-            // );
           }
         })
         .catch((err) => {

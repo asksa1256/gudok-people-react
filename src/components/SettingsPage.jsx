@@ -72,9 +72,22 @@ export default function SettingsPage() {
       .where("email", "==", user.email)
       .get();
     const doc = snapshot.docs[0];
-    Notification.requestPermission().then((permission) => {
+
+    // 브라우저가 Notification API를 지원하는지 확인
+    if (!("Notification" in window)) {
+      console.log("Notification API를 지원하지 않는 브라우저입니다.");
+      return;
+    }
+
+    // 이미 권한이 부여되어 있는지 확인
+    if (Notification.permission === "granted") {
+      alert("이미 알림 권한이 부여되었습니다.");
+      return;
+    }
+
+    // 권한 요청
+    Notification.requestPermission().then(function (permission) {
       if (permission === "granted") {
-        console.log("Notification permission granted.");
         getToken(messaging, {
           vapidKey:
             "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
@@ -108,6 +121,9 @@ export default function SettingsPage() {
             console.error("Error updating document field: ", error);
           }
         });
+        console.log("알림 권한이 부여되었습니다.");
+      } else {
+        console.log("알림 권한이 거부되었습니다.");
       }
     });
   };
@@ -137,13 +153,13 @@ export default function SettingsPage() {
                 ? "알림 활성화 상태입니다."
                 : "알림 비활성화 상태입니다."}
             </dd>
-            {!pushPermitted && (
-              <dt>
-                <button className="text-btn" onClick={requestPermission}>
-                  알림 허용하기
-                </button>
-              </dt>
-            )}
+            {/* {!pushPermitted && ( */}
+            <dt>
+              <button className="text-btn" onClick={requestPermission}>
+                알림 허용하기
+              </button>
+            </dt>
+            {/* )} */}
           </dl>
         </div>
         <Dockbar active="settings" />
