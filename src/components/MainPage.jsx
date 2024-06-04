@@ -45,6 +45,7 @@ export default function MainPage() {
   const fetchData = () => {
     firebase.auth().onAuthStateChanged(async (user) => {
       try {
+        if (!user) return;
         const snapshot = await db
           .collection("user")
           .where("email", "==", user.email)
