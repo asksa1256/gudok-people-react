@@ -24,20 +24,14 @@ admin.initializeApp({
 // Firestore DB 불러오기
 const db = getFirestore();
 
-// app.listen(3000, function () {
-//   console.log("listening on 3000");
-// });
+app.listen(3000, function () {
+  console.log("listening on 3000");
+});
 
 // CORS 이슈 방지
 app.use(express.json());
 const cors = require("cors");
-app.use(
-  cors({
-    origin: ["https://localhost:3000"],
-    credentials: true,
-    methods: ["GET", "POST", "OPTIONS"],
-  })
-);
+app.use(cors());
 
 // 현재 날짜 구하는 함수
 function getCurrentDate() {
@@ -217,9 +211,5 @@ app.get("/", (res, req) => {
 });
 
 app.get("*", (res, req) => {
-  req.sendFile(path.join(__dirname, "build/index.html"));
-});
-
-app.get("https://asksa1256.github.io", (res, req) => {
   req.sendFile(path.join(__dirname, "build/index.html"));
 });
