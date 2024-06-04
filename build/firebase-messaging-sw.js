@@ -49,18 +49,18 @@ self.addEventListener("notificationclick", function (event) {
   event.waitUntil(clients.openWindow(url));
 });
 
-// 백그라운드 메시징 (두개씩 가서 주석 처리..)
-// messaging.onBackgroundMessage(messaging, (payload) => {
-//   console.log(
-//     "[firebase-messaging-sw.js] Received background message ",
-//     payload
-//   );
-//   // 알림 커스터마이징
-//   const notificationTitle = "Background Message Title";
-//   const notificationOptions = {
-//     body: "Background Message body.",
-//     // icon: "/firebase-logo.png",
-//   };
+// 백그라운드 메시징
+messaging.onBackgroundMessage(messaging, (payload) => {
+  console.log(
+    "[firebase-messaging-sw.js] Received background message ",
+    payload
+  );
+  // 알림 커스터마이징
+  const notificationTitle = "Background Message Title";
+  const notificationOptions = {
+    body: "Background Message body.",
+    // icon: "/firebase-logo.png",
+  };
 
-//   self.registration.showNotification(notificationTitle, notificationOptions);
-// });
+  self.registration.showNotification(notificationTitle, notificationOptions);
+});
