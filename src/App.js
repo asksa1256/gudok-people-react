@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
@@ -29,11 +29,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
-// const messaging = getMessaging();
-let messaging;
-if (document.location.protocol === "https:") {
-  messaging = getMessaging();
-}
+const messaging = getMessaging();
 
 export const AppContext = createContext();
 
@@ -59,27 +55,29 @@ function App() {
     });
   }
 
-  if (isSupported()) {
-    // FCM(파이어베이스 클라우드 메시징)이 지원되지 않는 브라우저에서는 화면이 하얗게 뜨는 현상 방지
-    getToken(messaging, {
-      vapidKey:
-        "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
-    })
-      .then((currentToken) => {
-        if (currentToken) {
-          console.log(currentToken);
-          setDeviceToken(currentToken);
-        } else {
-          requestPermission();
-          // alert(
-          //   "알림 거부 시 자동결제 사전 알림을 받을 수 없으므로 알림 허용을 권장합니다."
-          // );
-        }
+  useEffect(() => {
+    if (isSupported()) {
+      // FCM(파이어베이스 클라우드 메시징)이 지원되지 않는 브라우저에서는 화면이 하얗게 뜨는 현상 방지
+      getToken(messaging, {
+        vapidKey:
+          "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
       })
-      .catch((err) => {
-        console.log("An error occurred while retrieving token. ", err);
-      });
-  }
+        .then((currentToken) => {
+          if (currentToken) {
+            console.log(currentToken);
+            setDeviceToken(currentToken);
+          } else {
+            requestPermission();
+            // alert(
+            //   "알림 거부 시 자동결제 사전 알림을 받을 수 없으므로 알림 허용을 권장합니다."
+            // );
+          }
+        })
+        .catch((err) => {
+          console.log("An error occurred while retrieving token. ", err);
+        });
+    }
+  }, []);
 
   return (
     <AppContext.Provider value={deviceToken}>
@@ -88,7 +86,6 @@ function App() {
           <Route path="/" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/main" element={<MainPage />} />
-          <Route path="/mySubscription" element={<MySubscriptionPage />} />
           <Route path="/ranking" element={<RankingPage />} />
           <Route path="/community" element={<CommunityPage />} />
           <Route

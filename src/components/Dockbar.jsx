@@ -19,19 +19,6 @@ export default function Dockbar(props) {
         </Link>
       </div>
       <div className="dock-item">
-        <Link to="/mySubscription" className="dock-link">
-          <figure className="icon">
-            <img
-              src={`/images/stack-${
-                props.active === "mySubscription" ? "fill" : "line"
-              }.svg`}
-              alt=""
-            />
-          </figure>
-          <span className="text">내 구독</span>
-        </Link>
-      </div>
-      <div className="dock-item">
         <Link to="/ranking" className="dock-link">
           <figure className="icon">
             <img
