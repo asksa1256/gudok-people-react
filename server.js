@@ -214,11 +214,11 @@ app.use(express.static(path.join(__dirname, "build")));
 
 // 메인페이지 접속 시 build 폴더의 index.html 전송
 app.get("/", (res, req) => {
-  req.sendFile(path.join(__dirname, "build/index.html"));
+  req.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
 app.get("*", (res, req) => {
-  req.sendFile(path.join(__dirname, "build/index.html"));
+  req.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
 module.exports = app;
