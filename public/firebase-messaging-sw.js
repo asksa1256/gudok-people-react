@@ -49,7 +49,7 @@ self.addEventListener("notificationclick", function (event) {
   event.waitUntil(clients.openWindow(url));
 });
 
-// 백그라운드 메시징
+// 백그라운드 메시징 (두개씩 가서 주석 처리..)
 // messaging.onBackgroundMessage(messaging, (payload) => {
 //   console.log(
 //     "[firebase-messaging-sw.js] Received background message ",
