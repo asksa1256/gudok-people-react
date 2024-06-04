@@ -22,7 +22,11 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-const messaging = getMessaging();
+// const messaging = getMessaging();
+let messaging;
+if (document.location.protocol === "https:") {
+  messaging = getMessaging();
+}
 const db = firebase.firestore();
 
 export default function SettingsPage() {

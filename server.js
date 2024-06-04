@@ -24,6 +24,7 @@ admin.initializeApp({
 // Firestore DB 불러오기
 const db = getFirestore();
 
+app.set("port", 3000);
 app.listen(3000, function () {
   console.log("listening on 3000");
 });
@@ -31,7 +32,13 @@ app.listen(3000, function () {
 // CORS 이슈 방지
 app.use(express.json());
 const cors = require("cors");
-app.use(cors());
+app.use(
+  cors({
+    origin: ["https://localhost:3000"],
+    credentials: true,
+    methods: ["GET", "POST", "OPTIONS"],
+  })
+);
 
 // 현재 날짜 구하는 함수
 function getCurrentDate() {
@@ -213,3 +220,5 @@ app.get("/", (res, req) => {
 app.get("*", (res, req) => {
   req.sendFile(path.join(__dirname, "build/index.html"));
 });
+
+module.exports = app;
