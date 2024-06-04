@@ -8,12 +8,9 @@ const schedule = require("node-schedule");
 const admin = require("firebase-admin");
 const serviceAccount = require("./firebase-admin.json");
 const { getFirestore } = require("firebase-admin/firestore");
-const dns = require("node:dns");
 
 // node server.js
 console.log("server is running...");
-
-dns.setDefaultResultOrder("ipv4first");
 
 // Firebase Admin SDK 초기화
 admin.initializeApp({
@@ -32,13 +29,7 @@ app.listen(3000, function () {
 // CORS 이슈 방지
 app.use(express.json());
 const cors = require("cors");
-app.use(
-  cors({
-    origin: ["https://localhost:3000"],
-    credentials: true,
-    methods: ["GET", "POST", "OPTIONS"],
-  })
-);
+app.use(cors());
 
 // 현재 날짜 구하는 함수
 function getCurrentDate() {

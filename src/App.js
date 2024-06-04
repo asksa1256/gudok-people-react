@@ -67,6 +67,7 @@ function App() {
     })
       .then((currentToken) => {
         if (currentToken) {
+          console.log(currentToken);
           setDeviceToken(currentToken);
         } else {
           requestPermission();
