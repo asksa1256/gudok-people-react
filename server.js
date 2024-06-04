@@ -8,9 +8,12 @@ const schedule = require("node-schedule");
 const admin = require("firebase-admin");
 const serviceAccount = require("./firebase-admin.json");
 const { getFirestore } = require("firebase-admin/firestore");
+const dns = require("node:dns");
 
 // node server.js
 console.log("server is running...");
+
+dns.setDefaultResultOrder("ipv4first");
 
 // Firebase Admin SDK 초기화
 admin.initializeApp({
@@ -21,9 +24,9 @@ admin.initializeApp({
 // Firestore DB 불러오기
 const db = getFirestore();
 
-app.listen(3000, function () {
-  console.log("listening on 3000");
-});
+// app.listen(3000, function () {
+//   console.log("listening on 3000");
+// });
 
 // CORS 이슈 방지
 app.use(express.json());
