@@ -11,6 +11,7 @@ import SubscriptionItem from "./SubscriptionItem";
 import AddSubscrModal from "./AddSubscrModal";
 import UpdateSubscrModal from "./UpdateSubscrModal";
 import Dockbar from "./Dockbar";
+import isIphone from "../isIphone";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -50,52 +51,54 @@ export default function MainPage() {
         setDocId(doc.id);
 
         // 로그인 할 때마다 토큰 갱신 처리
-        getToken(messaging, {
-          vapidKey:
-            "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
-        })
-          .then((refreshedToken) => {
-            // 서버에 있던 기존 토큰 갱신
-            try {
-              const docRef = firestore.collection("user").doc(doc.id);
-              docRef.update({
-                token: refreshedToken,
-              });
-
-              // 'users' 하위 컬렉션 'subscriptions'의 모든 데이터 조회
-              docRef
-                .collection("subscriptions")
-                .get()
-                .then((querySnapshot) => {
-                  let totalPrice = 0;
-                  querySnapshot.forEach((doc) => {
-                    // 각 문서의 'token' 필드값 갱신
-                    // console.log(refreshedToken);
-                    docRef
-                      .collection("subscriptions")
-                      .doc(doc.id)
-                      .update({
-                        token: refreshedToken,
-                      })
-                      .then(() => {
-                        // console.log("Document successfully updated!");
-                      })
-                      .catch((error) => {
-                        console.error("Error updating document: ", error);
-                      });
-
-                    // 총 구독료 계산
-                    totalPrice += doc.data().price;
-                    setTotalPrice(totalPrice);
-                  });
-                });
-            } catch (error) {
-              console.error("Error updating document field: ", error);
-            }
+        if (!isIphone()) {
+          getToken(messaging, {
+            vapidKey:
+              "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
           })
-          .catch((error) => {
-            console.error("FCM 토큰 갱신 중 오류 발생:", error);
-          });
+            .then((refreshedToken) => {
+              // 서버에 있던 기존 토큰 갱신
+              try {
+                const docRef = firestore.collection("user").doc(doc.id);
+                docRef.update({
+                  token: refreshedToken,
+                });
+
+                // 'users' 하위 컬렉션 'subscriptions'의 모든 데이터 조회
+                docRef
+                  .collection("subscriptions")
+                  .get()
+                  .then((querySnapshot) => {
+                    let totalPrice = 0;
+                    querySnapshot.forEach((doc) => {
+                      // 각 문서의 'token' 필드값 갱신
+                      // console.log(refreshedToken);
+                      docRef
+                        .collection("subscriptions")
+                        .doc(doc.id)
+                        .update({
+                          token: refreshedToken,
+                        })
+                        .then(() => {
+                          // console.log("Document successfully updated!");
+                        })
+                        .catch((error) => {
+                          console.error("Error updating document: ", error);
+                        });
+
+                      // 총 구독료 계산
+                      totalPrice += doc.data().price;
+                      setTotalPrice(totalPrice);
+                    });
+                  });
+              } catch (error) {
+                console.error("Error updating document field: ", error);
+              }
+            })
+            .catch((error) => {
+              console.error("FCM 토큰 갱신 중 오류 발생:", error);
+            });
+        }
 
         // 구독 정보 조회
         const subCollectionSnapshot = await db

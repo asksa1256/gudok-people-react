@@ -142,7 +142,11 @@ async function sendFCM() {
   });
 }
 
-sendFCM();
+function isIphone() {
+  return /iPhone/i.test(navigator.userAgent);
+}
+
+if (!isIphone()) sendFCM();
 
 // 다음달 날짜를 구하는 함수
 function getNextMonthDate(dateStr) {
