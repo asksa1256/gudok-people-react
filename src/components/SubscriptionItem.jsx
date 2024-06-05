@@ -22,7 +22,10 @@ export default function SubscriptionItem(props) {
     <>
       <li className="subscr-list-item">
         <figure className="icon">
-          <img src={props.imgUrl} alt="" />
+          <img
+            src={props.imgUrl ? props.imgUrl : "/images/logo-grayscale.png"}
+            alt=""
+          />
         </figure>
         <div className="desc">
           <span className="name">{props.title}</span>
@@ -45,7 +48,9 @@ export default function SubscriptionItem(props) {
         </div>
         <div className="actions">
           <button onClick={itemModifyHandler}>수정</button>
-          <button onClick={itemDeleteHandler}>삭제</button>
+          <button style={{ color: "red" }} onClick={itemDeleteHandler}>
+            삭제
+          </button>
         </div>
       </li>
     </>

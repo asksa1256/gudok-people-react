@@ -37,10 +37,8 @@ function App() {
   const [deviceToken, setDeviceToken] = useState("");
 
   function requestPermission() {
-    console.log("Requesting permission...");
     Notification.requestPermission().then((permission) => {
       if (permission === "granted") {
-        console.log("Notification permission granted.");
         getToken(messaging, {
           vapidKey:
             "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
@@ -64,7 +62,7 @@ function App() {
       })
         .then((currentToken) => {
           if (currentToken) {
-            console.log(currentToken);
+            // console.log(currentToken);
             setDeviceToken(currentToken);
           } else {
             requestPermission();

@@ -153,13 +153,13 @@ export default function SettingsPage() {
                 ? "알림 활성화 상태입니다."
                 : "알림 비활성화 상태입니다."}
             </dd>
-            {/* {!pushPermitted && ( */}
-            <dt>
-              <button className="text-btn" onClick={requestPermission}>
-                알림 허용하기
-              </button>
-            </dt>
-            {/* )} */}
+            {!pushPermitted && (
+              <dt>
+                <button className="text-btn" onClick={requestPermission}>
+                  알림 허용하기
+                </button>
+              </dt>
+            )}
           </dl>
         </div>
         <Dockbar active="settings" />

@@ -13,6 +13,12 @@ section {
   overflow: hidden;
 }
 
+@media (max-width: 430px) {
+  section {
+    width: 100%;
+  }
+}
+
 .align-center {
   display: flex;
   justify-content: center;
@@ -24,6 +30,10 @@ section {
   height: 100%;
   padding: 16px;
   background: #fff;
+
+  h2 {
+    margin-bottom: 16px;
+  }
 
   &-header {
     display: flex;

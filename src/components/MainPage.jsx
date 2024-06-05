@@ -70,7 +70,7 @@ export default function MainPage() {
                   let totalPrice = 0;
                   querySnapshot.forEach((doc) => {
                     // 각 문서의 'token' 필드값 갱신
-                    console.log(refreshedToken);
+                    // console.log(refreshedToken);
                     docRef
                       .collection("subscriptions")
                       .doc(doc.id)
