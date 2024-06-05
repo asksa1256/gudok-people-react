@@ -8,15 +8,8 @@ const schedule = require("node-schedule");
 const admin = require("firebase-admin");
 const serviceAccount = require("./firebase-admin.json");
 const { getFirestore } = require("firebase-admin/firestore");
-let userAgent;
+let isUserDeviceIphone;
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "text/plain");
-
-  // User-Agent를 통해 접속 기기 확인
-  userAgent = req.headers["user-agent"];
-});
 // node server.js
 console.log("server is running...");
 
@@ -29,6 +22,11 @@ admin.initializeApp({
 // Firestore DB 불러오기
 const db = getFirestore();
 
+// 아이폰인지 확인하는 함수
+function isIphone(userAgent) {
+  return /iPhone/i.test(userAgent);
+}
+
 app.set("port", 3000);
 app.listen(3000, function () {
   console.log("listening on 3000");
@@ -38,6 +36,19 @@ app.listen(3000, function () {
 app.use(express.json());
 const cors = require("cors");
 app.use(cors());
+
+app.use(express.static(path.join(__dirname, "build")));
+
+// 메인페이지 접속 시 build 폴더의 index.html 전송
+app.get("/", (res, req) => {
+  req.sendFile(path.join(__dirname, "build", "index.html"));
+  const userAgent = req.header["user-agent"];
+  isUserDeviceIphone = isIphone(userAgent);
+});
+
+app.get("*", (res, req) => {
+  req.sendFile(path.join(__dirname, "build", "index.html"));
+});
 
 // 현재 날짜 구하는 함수
 function getCurrentDate() {
@@ -150,12 +161,7 @@ async function sendFCM() {
   });
 }
 
-// 아이폰인지 확인하는 함수
-function isIphone(userAgent) {
-  return /iPhone/i.test(userAgent);
-}
-
-if (!isIphone()) sendFCM();
+if (!isUserDeviceIphone) sendFCM();
 
 // 다음달 날짜를 구하는 함수
 function getNextMonthDate(dateStr) {
@@ -213,16 +219,5 @@ async function updatePayDate() {
 }
 
 updatePayDate();
-
-app.use(express.static(path.join(__dirname, "build")));
-
-// 메인페이지 접속 시 build 폴더의 index.html 전송
-app.get("/", (res, req) => {
-  req.sendFile(path.join(__dirname, "build", "index.html"));
-});
-
-app.get("*", (res, req) => {
-  req.sendFile(path.join(__dirname, "build", "index.html"));
-});
 
 module.exports = app;
