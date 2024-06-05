@@ -83,7 +83,6 @@ export default function SettingsPage() {
     }
 
     // 권한 요청
-    if (isIphone()) return;
     Notification.requestPermission().then(function (permission) {
       if (permission === "granted") {
         getToken(messaging, {

@@ -8,7 +8,6 @@ const schedule = require("node-schedule");
 const admin = require("firebase-admin");
 const serviceAccount = require("./firebase-admin.json");
 const { getFirestore } = require("firebase-admin/firestore");
-let isUserDeviceIphone;
 
 // node server.js
 console.log("server is running...");
@@ -22,11 +21,6 @@ admin.initializeApp({
 // Firestore DB 불러오기
 const db = getFirestore();
 
-// 아이폰인지 확인하는 함수
-function isIphone(userAgent) {
-  return /iPhone/i.test(userAgent);
-}
-
 app.set("port", 3000);
 app.listen(3000, function () {
   console.log("listening on 3000");
@@ -36,19 +30,6 @@ app.listen(3000, function () {
 app.use(express.json());
 const cors = require("cors");
 app.use(cors());
-
-app.use(express.static(path.join(__dirname, "build")));
-
-// 메인페이지 접속 시 build 폴더의 index.html 전송
-app.get("/", (res, req) => {
-  req.sendFile(path.join(__dirname, "build", "index.html"));
-  const userAgent = req.header["user-agent"];
-  isUserDeviceIphone = isIphone(userAgent);
-});
-
-app.get("*", (res, req) => {
-  req.sendFile(path.join(__dirname, "build", "index.html"));
-});
 
 // 현재 날짜 구하는 함수
 function getCurrentDate() {
@@ -123,7 +104,9 @@ async function sendFCM() {
                   .price.toLocaleString("ko-KR")}원이 자동 결제됩니다.`,
               },
               // 푸시 알림 수신 대상 등 설정
-              token: subChange.doc.data().token,
+              token: subChange.doc.data().token
+                ? subChange.doc.data().token
+                : "token",
             };
 
             // 저장된 구독 정보의 payDate 기반 사전알림 날짜 변수 설정
@@ -161,7 +144,7 @@ async function sendFCM() {
   });
 }
 
-if (!isUserDeviceIphone) sendFCM();
+sendFCM();
 
 // 다음달 날짜를 구하는 함수
 function getNextMonthDate(dateStr) {
@@ -219,5 +202,16 @@ async function updatePayDate() {
 }
 
 updatePayDate();
+
+app.use(express.static(path.join(__dirname, "build")));
+
+// 메인페이지 접속 시 build 폴더의 index.html 전송
+app.get("/", (res, req) => {
+  req.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
+app.get("*", (res, req) => {
+  req.sendFile(path.join(__dirname, "build", "index.html"));
+});
 
 module.exports = app;
