@@ -8,7 +8,15 @@ const schedule = require("node-schedule");
 const admin = require("firebase-admin");
 const serviceAccount = require("./firebase-admin.json");
 const { getFirestore } = require("firebase-admin/firestore");
+let userAgent;
 
+const server = http.createServer((req, res) => {
+  res.statusCode = 200;
+  res.setHeader("Content-Type", "text/plain");
+
+  // User-Agent를 통해 접속 기기 확인
+  userAgent = req.headers["user-agent"];
+});
 // node server.js
 console.log("server is running...");
 
@@ -142,8 +150,9 @@ async function sendFCM() {
   });
 }
 
-function isIphone() {
-  return /iPhone/i.test(navigator.userAgent);
+// 아이폰인지 확인하는 함수
+function isIphone(userAgent) {
+  return /iPhone/i.test(userAgent);
 }
 
 if (!isIphone()) sendFCM();
