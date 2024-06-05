@@ -23,11 +23,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-// const messaging = getMessaging();
-let messaging;
-if (document.location.protocol === "https:") {
-  messaging = getMessaging();
-}
+const messaging = getMessaging();
 const db = firebase.firestore();
 
 export default function SettingsPage() {
@@ -87,6 +83,7 @@ export default function SettingsPage() {
     }
 
     // 권한 요청
+    if (isIphone()) return;
     Notification.requestPermission().then(function (permission) {
       if (permission === "granted") {
         getToken(messaging, {
@@ -154,12 +151,13 @@ export default function SettingsPage() {
                 ? "알림 활성화 상태입니다."
                 : "알림 비활성화 상태입니다."}
             </dd>
-            {isIphone() && "알림 기능이 지원되지 않는 기기입니다."}
-            {!isIphone() && !pushPermitted && (
+            {!pushPermitted && (
               <dt>
-                <button className="text-btn" onClick={requestPermission}>
-                  알림 허용하기
-                </button>
+                {!isIphone() && (
+                  <button className="text-btn" onClick={requestPermission}>
+                    알림 허용하기
+                  </button>
+                )}
               </dt>
             )}
           </dl>
