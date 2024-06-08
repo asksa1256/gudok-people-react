@@ -8,6 +8,7 @@ import { getAuth } from "firebase/auth";
 import { getMessaging, getToken } from "firebase/messaging";
 import Dockbar from "./Dockbar";
 import "./SettingsPage.scss";
+import isIphone from "../isIphone";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -22,11 +23,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-// const messaging = getMessaging();
-let messaging;
-if (document.location.protocol === "https:") {
-  messaging = getMessaging();
-}
+const messaging = getMessaging();
 const db = firebase.firestore();
 
 export default function SettingsPage() {
@@ -153,13 +150,15 @@ export default function SettingsPage() {
                 ? "알림 활성화 상태입니다."
                 : "알림 비활성화 상태입니다."}
             </dd>
-            {/* {!pushPermitted && ( */}
-            <dt>
-              <button className="text-btn" onClick={requestPermission}>
-                알림 허용하기
-              </button>
-            </dt>
-            {/* )} */}
+            {!pushPermitted && (
+              <dt>
+                {!isIphone() && (
+                  <button className="text-btn" onClick={requestPermission}>
+                    알림 허용하기
+                  </button>
+                )}
+              </dt>
+            )}
           </dl>
         </div>
         <Dockbar active="settings" />

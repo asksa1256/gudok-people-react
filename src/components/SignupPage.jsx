@@ -42,7 +42,6 @@ export default function SignupPage() {
   // 회원가입 정보 firebase DB로 전송
   async function submitSignupHandler(event) {
     event.preventDefault();
-    // console.log(deviceToken);
 
     nickname.length === 0 ? setNicknameValid(false) : setNicknameValid(true);
     password.length < 6 ? setPasswordValid(false) : setPasswordValid(true);
@@ -103,17 +102,6 @@ export default function SignupPage() {
       }
     }
   }
-
-  // function checkDuplicate() {
-  //   const user = auth.currentUser; // 로그인을 한번이라도 해야 currentUser에 등록이 됨. 가입만 하고 로그인을 안하면 가입했어도 null로 뜸. => 회원가입 후 자동으로 로그인 시키면 사용 가능 -> 중복확인 로직 구현 가능할수도
-
-  //   console.log(user);
-  //   if (user !== null) {
-  //     user.providerData.forEach((profile) => {
-  //       console.log("  Email: " + profile.email);
-  //     });
-  //   }
-  // }
 
   return (
     <div className="align-center">

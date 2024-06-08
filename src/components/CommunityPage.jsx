@@ -4,6 +4,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 import "firebase/compat/auth";
 import { getAuth } from "firebase/auth";
+import "../App.scss";
 import "./CommunityPage.scss";
 import Dockbar from "./Dockbar";
 
@@ -111,6 +112,7 @@ export default function CommunityPage() {
       <section className="CommunityPage">
         <div className="contents">
           <div className="nav-top"></div>
+          <h2>커뮤니티</h2>
           <div className="search-bar">
             <input
               type="text"
@@ -127,9 +129,9 @@ export default function CommunityPage() {
           <ul className="community-list">
             {filteredPosts.map((post) => (
               <li key={post.id} className="community-item">
-                <h2 onClick={() => viewPostDetailHandler(post.id)}>
+                <h3 onClick={() => viewPostDetailHandler(post.id)}>
                   {post.title}
-                </h2>
+                </h3>
                 <p onClick={() => viewPostDetailHandler(post.id)}>
                   {post.content}
                 </p>

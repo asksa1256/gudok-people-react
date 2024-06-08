@@ -47,12 +47,19 @@
     }
   }
 
-  .form-control input {
-    font-size: 14px;
+  .form-control {
+    input {
+      font-size: 14px;
 
-    &[type="number"] {
-      padding-right: 0;
-      text-align: center;
+      &[type="number"] {
+        text-align: center;
+      }
+    }
+
+    label {
+      input[type="number"] {
+        max-width: 120px;
+      }
     }
   }
 }

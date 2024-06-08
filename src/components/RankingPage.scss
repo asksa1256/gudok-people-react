@@ -1,13 +1,16 @@
 .platform-category {
   display: flex;
-  margin-top: 10px;
-  padding: 4px 0 24px;
+  margin: 10px 0 20px;
+  padding: 4px 0 8px;
   white-space: nowrap;
   overflow-x: auto;
 
   li {
     + li {
       margin-left: 10px;
+      @media (max-width: 430px) {
+        margin-left: 4px;
+      }
     }
 
     &.active {
@@ -26,6 +29,9 @@
       border: 2px solid #ae6cdc;
       border-radius: 50px;
       color: #ae6cdc;
+      @media (max-width: 430px) {
+        font-size: 14px;
+      }
     }
   }
 }

@@ -13,6 +13,12 @@ section {
   overflow: hidden;
 }
 
+@media (max-width: 430px) {
+  section {
+    width: 100%;
+  }
+}
+
 .align-center {
   display: flex;
   justify-content: center;
@@ -24,6 +30,10 @@ section {
   height: 100%;
   padding: 16px;
   background: #fff;
+
+  h2 {
+    margin-bottom: 16px;
+  }
 
   &-header {
     display: flex;
@@ -121,6 +131,13 @@ section {
 
   &:hover:before,
   &:focus:before {
+    background: #ae6cdc;
+  }
+}
+
+#signupLink {
+  color: #ae6cdc;
+  &:before {
     background: #ae6cdc;
   }
 }
@@ -225,13 +242,29 @@ section {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    @media (max-width: 430px) {
+      flex-wrap: wrap;
+    }
+
+    input[type="radio"] {
+      @media (max-width: 430px) {
+        margin-bottom: 16px;
+      }
+    }
 
     label {
       margin-bottom: 0;
+      @media (max-width: 430px) {
+        width: calc(100% - 32px);
+        margin-bottom: 16px;
+      }
     }
 
     * + * {
       margin-left: 8px;
+      @media (max-width: 430px) {
+        margin-left: 0;
+      }
     }
 
     .btn-w50 {

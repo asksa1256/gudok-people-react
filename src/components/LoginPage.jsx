@@ -59,14 +59,14 @@ export default function LoginPage() {
               </button>
             </div>
             <div className="text-center">
-              <Link to="/signup" className="text-link">
+              <Link to="/signup" className="text-link" id="signupLink">
                 계정이 없으신가요? 회원가입하기
               </Link>
             </div>
             <div className="text-center">
-              <Link to="/main" className="text-link">
-                비회원으로 이용하기
-              </Link>
+              <p style={{ marginTop: "10px", color: "gray", fontSize: "11px" }}>
+                iOS에서는 자동결제 알림이 지원되지 않습니다.ㅠㅠ
+              </p>
             </div>
           </div>
         </div>

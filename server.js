@@ -104,7 +104,9 @@ async function sendFCM() {
                   .price.toLocaleString("ko-KR")}원이 자동 결제됩니다.`,
               },
               // 푸시 알림 수신 대상 등 설정
-              token: subChange.doc.data().token,
+              token: subChange.doc.data().token
+                ? subChange.doc.data().token
+                : "token",
             };
 
             // 저장된 구독 정보의 payDate 기반 사전알림 날짜 변수 설정

@@ -11,10 +11,10 @@ import MainPage from "./components/MainPage";
 import CommunityPage from "./components/CommunityPage";
 import RankingPage from "./components/RankingPage";
 import SettingsPage from "./components/SettingsPage";
-import MySubscriptionPage from "./components/MySubscriptionPage";
 import AddPostPage from "./components/AddPostPage";
 import EditPostPage from "./components/EditPostPage";
 import PostDetailPage from "./components/PostDetailPage";
+import isIphone from "./isIphone";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -37,10 +37,8 @@ function App() {
   const [deviceToken, setDeviceToken] = useState("");
 
   function requestPermission() {
-    console.log("Requesting permission...");
     Notification.requestPermission().then((permission) => {
       if (permission === "granted") {
-        console.log("Notification permission granted.");
         getToken(messaging, {
           vapidKey:
             "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
@@ -58,13 +56,14 @@ function App() {
   useEffect(() => {
     if (isSupported()) {
       // FCM(파이어베이스 클라우드 메시징)이 지원되지 않는 브라우저에서는 화면이 하얗게 뜨는 현상 방지
+      if (isIphone()) return;
       getToken(messaging, {
         vapidKey:
           "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
       })
         .then((currentToken) => {
           if (currentToken) {
-            console.log(currentToken);
+            // console.log(currentToken);
             setDeviceToken(currentToken);
           } else {
             requestPermission();
