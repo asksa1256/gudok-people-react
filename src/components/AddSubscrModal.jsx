@@ -145,7 +145,7 @@ export default function Modal(props) {
     const addDate = dateFormat(today);
 
     const newData = {
-      title: title,
+      title: title.trim(),
       price: price * 1,
       payDate: payDate,
       free: !free ? 0 : freePeriod * 1,
@@ -189,8 +189,8 @@ export default function Modal(props) {
             type="text"
             id="subscription-name"
             value={title}
-            onClick={() => setSearchTitleForm(true)}
-            onChange={(e) => setTitle(e.target.value.trim())}
+            onFocus={() => setSearchTitleForm(true)}
+            onChange={(e) => setTitle(e.target.value)}
             placeholder="쿠팡와우, 넷플릭스, 멜론, ..."
           />
           {searchTitleForm && (
@@ -222,6 +222,7 @@ export default function Modal(props) {
             style={{ textAlign: "left" }}
             value={price}
             onChange={(e) => setPrice(e.target.value.trim())}
+            onFocus={() => setSearchTitleForm(false)}
           />
         </div>
         <div className="form-control">
@@ -232,6 +233,7 @@ export default function Modal(props) {
             placeholder="2024-01-01"
             value={payDate}
             onChange={(e) => setPayDate(e.target.value.trim())}
+            onFocus={() => setSearchTitleForm(false)}
           />
         </div>
         <div className="form-control">
@@ -243,6 +245,7 @@ export default function Modal(props) {
               id="radioNotFree"
               defaultChecked="true"
               onClick={clickRadioHandler}
+              onFocus={() => setSearchTitleForm(false)}
             />
             <label htmlFor="radioNotFree">해당 없음</label>
             <input
@@ -250,6 +253,7 @@ export default function Modal(props) {
               name="free"
               id="radioFree"
               onClick={clickRadioHandler}
+              onFocus={() => setSearchTitleForm(false)}
             />
             <label htmlFor="radioFree">
               <input
@@ -261,6 +265,7 @@ export default function Modal(props) {
                 onChange={(e) => setFreePeriod(e.target.value.trim())}
                 className={freePeriod ? "active" : undefined}
                 onClick={clickRadioHandler}
+                onFocus={() => setSearchTitleForm(false)}
               />
             </label>
           </div>
@@ -274,6 +279,7 @@ export default function Modal(props) {
               id="radioNotShare"
               defaultChecked="true"
               onClick={clickRadioHandler}
+              onFocus={() => setSearchTitleForm(false)}
             />
             <label htmlFor="radioNotShare">해당 없음</label>
             <input
@@ -281,6 +287,7 @@ export default function Modal(props) {
               name="sharing"
               id="radioShare"
               onClick={clickRadioHandler}
+              onFocus={() => setSearchTitleForm(false)}
             />
             <label htmlFor="radioShare">
               <input
@@ -292,6 +299,7 @@ export default function Modal(props) {
                 onChange={(e) => setShareCount(e.target.value.trim())}
                 className={shareCount ? "active" : undefined}
                 onClick={clickRadioHandler}
+                onFocus={() => setSearchTitleForm(false)}
               />
             </label>
           </div>

@@ -14,7 +14,12 @@
   li {
     display: flex;
     align-items: center;
+    margin-bottom: 16px;
     cursor: pointer;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
 
     img {
       width: 32px;

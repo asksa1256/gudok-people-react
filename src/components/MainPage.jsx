@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 import "firebase/compat/auth";
 import { getAuth } from "firebase/auth";
-import { getMessaging, getToken, isSupported } from "firebase/messaging";
+import { getMessaging, getToken } from "firebase/messaging";
 import "firebase/compat/messaging";
 import "./MainPage.scss";
 import SubscriptionItem from "./SubscriptionItem";
@@ -35,7 +34,6 @@ export default function MainPage() {
   const [currentUser, setCurrentUser] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
   const [targetData, setTargetData] = useState({});
-  const navigate = useNavigate();
 
   // 구독 정보 불러오기
   const fetchData = () => {
@@ -48,6 +46,20 @@ export default function MainPage() {
           .get();
         const doc = snapshot.docs[0]; // 해당 계정의 docId값
         setDocId(doc.id);
+        const docRef = firestore.collection("user").doc(doc.id);
+
+        // 'users' 하위 컬렉션 'subscriptions'의 모든 데이터 조회
+        docRef
+          .collection("subscriptions")
+          .get()
+          .then((querySnapshot) => {
+            let totalPrice = 0;
+            querySnapshot.forEach((doc) => {
+              // 총 구독료 계산
+              totalPrice += doc.data().price;
+              setTotalPrice(totalPrice);
+            });
+          });
 
         // 로그인 할 때마다 토큰 갱신 처리
         getToken(messaging, {
@@ -55,40 +67,11 @@ export default function MainPage() {
             "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
         })
           .then((refreshedToken) => {
-            // 서버에 있던 기존 토큰 갱신
             try {
-              const docRef = firestore.collection("user").doc(doc.id);
+              // 서버에 있던 기존 토큰 갱신
               docRef.update({
                 token: refreshedToken,
               });
-
-              // 'users' 하위 컬렉션 'subscriptions'의 모든 데이터 조회
-              docRef
-                .collection("subscriptions")
-                .get()
-                .then((querySnapshot) => {
-                  let totalPrice = 0;
-                  querySnapshot.forEach((doc) => {
-                    // 각 문서의 'token' 필드값 갱신
-                    console.log(refreshedToken);
-                    docRef
-                      .collection("subscriptions")
-                      .doc(doc.id)
-                      .update({
-                        token: refreshedToken,
-                      })
-                      .then(() => {
-                        // console.log("Document successfully updated!");
-                      })
-                      .catch((error) => {
-                        console.error("Error updating document: ", error);
-                      });
-
-                    // 총 구독료 계산
-                    totalPrice += doc.data().price;
-                    setTotalPrice(totalPrice);
-                  });
-                });
             } catch (error) {
               console.error("Error updating document field: ", error);
             }
