@@ -65,7 +65,7 @@ export default function LoginPage() {
             </div>
             <div className="text-center">
               <p style={{ marginTop: "10px", color: "gray", fontSize: "11px" }}>
-                iOS에서는 자동결제 알림이 지원되지 않습니다.ㅠㅠ
+                iOS에서는 자동결제 알림이 지원되지 않습니다.
               </p>
             </div>
           </div>
