@@ -37,6 +37,7 @@
 }
 
 .platform-chart-list {
+  height: calc(100vh - 274px);
   max-height: 560px;
   overflow-y: auto;
 

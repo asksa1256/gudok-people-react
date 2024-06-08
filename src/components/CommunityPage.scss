@@ -64,6 +64,7 @@
 .community-list {
   list-style-type: none;
   padding: 0;
+  height: calc(100vh - 270px);
   max-height: 600px;
   overflow-y: auto;
 }

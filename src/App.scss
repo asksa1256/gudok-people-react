@@ -9,7 +9,8 @@ section {
   position: relative;
   /* 모바일 크기로 설정 */
   width: 392px;
-  height: 852px;
+  height: 100vh;
+  max-height: 852px;
   overflow: hidden;
 }
 

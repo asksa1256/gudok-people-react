@@ -262,7 +262,14 @@ export default function MainPage() {
               <span className="won">원</span>
             </div>
           </div>
-          <div className="box">
+          <div
+            className="box"
+            style={{
+              height: "calc(100vh - 410px)",
+              maxHeight: "460px",
+              overflow: "auto",
+            }}
+          >
             <div className="box-title-wrap">
               <h5 className="box-title">내 구독 리스트</h5>
               <button
