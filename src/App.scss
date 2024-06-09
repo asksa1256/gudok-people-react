@@ -260,17 +260,22 @@ section {
       flex-wrap: wrap;
     }
 
-    input[type="radio"] {
-      @media (max-width: 430px) {
-        margin-bottom: 16px;
-      }
-    }
+    .radio-wrap {
+      display: flex;
+      align-items: center;
+      width: 100%;
 
-    label {
-      margin-bottom: 0;
-      @media (max-width: 430px) {
-        width: calc(100% - 32px);
-        margin-bottom: 16px;
+      input[type="radio"] {
+        @media (max-width: 430px) {
+          margin-bottom: 16px;
+        }
+      }
+
+      label {
+        margin-bottom: 0;
+        @media (max-width: 430px) {
+          margin-bottom: 16px;
+        }
       }
     }
 

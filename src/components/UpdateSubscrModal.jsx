@@ -259,7 +259,7 @@ export default function UpdateSubscrModal(props) {
           <input
             type="date"
             id="subscription-date"
-            placeholder="2024-01-01"
+            style={{ textAlign: "left" }}
             value={payDate}
             onChange={(e) => setPayDate(e.target.value.trim())}
           />
@@ -267,65 +267,73 @@ export default function UpdateSubscrModal(props) {
         <div className="form-control">
           <label>무료 체험 (일)</label>
           <div className="options">
-            <input
-              type="radio"
-              name="free"
-              id="radioNotFree"
-              defaultChecked={!props.free}
-              onClick={clickRadioHandler}
-            />
-            <label htmlFor="radioNotFree">해당 없음</label>
-            <input
-              type="radio"
-              name="free"
-              id="radioFree"
-              defaultChecked={props.free}
-              onClick={clickRadioHandler}
-            />
-            <label htmlFor="radioFree">
+            <div className="radio-wrap">
               <input
-                type="number"
-                id="freeInput"
-                placeholder="1"
-                min="1"
-                value={freePeriod}
-                onChange={(e) => setFreePeriod(e.target.value.trim())}
-                className={props.free ? "active" : undefined}
+                type="radio"
+                name="free"
+                id="radioNotFree"
+                defaultChecked={!props.free}
                 onClick={clickRadioHandler}
               />
-            </label>
+              <label htmlFor="radioNotFree">해당 없음</label>
+            </div>
+            <div className="radio-wrap">
+              <input
+                type="radio"
+                name="free"
+                id="radioFree"
+                defaultChecked={props.free}
+                onClick={clickRadioHandler}
+              />
+              <label htmlFor="radioFree">
+                <input
+                  type="number"
+                  id="freeInput"
+                  placeholder="1"
+                  min="1"
+                  value={freePeriod}
+                  onChange={(e) => setFreePeriod(e.target.value.trim())}
+                  className={props.free ? "active" : undefined}
+                  onClick={clickRadioHandler}
+                />
+              </label>
+            </div>
           </div>
         </div>
         <div className="form-control">
           <label>계정 공유 (명)</label>
           <div className="options">
-            <input
-              type="radio"
-              name="sharing"
-              id="radioNotShare"
-              defaultChecked={!props.sharing}
-              onClick={clickRadioHandler}
-            />
-            <label htmlFor="radioNotShare">해당 없음</label>
-            <input
-              type="radio"
-              name="sharing"
-              id="radioShare"
-              defaultChecked={props.sharing}
-              onClick={clickRadioHandler}
-            />
-            <label htmlFor="radioShare">
+            <div className="radio-wrap">
               <input
-                type="number"
-                id="shareInput"
-                placeholder="2"
-                min="2"
-                value={shareCount}
-                onChange={(e) => setShareCount(e.target.value.trim())}
-                className={props.sharing ? "active" : undefined}
+                type="radio"
+                name="sharing"
+                id="radioNotShare"
+                defaultChecked={!props.sharing}
                 onClick={clickRadioHandler}
               />
-            </label>
+              <label htmlFor="radioNotShare">해당 없음</label>
+            </div>
+            <div className="radio-wrap">
+              <input
+                type="radio"
+                name="sharing"
+                id="radioShare"
+                defaultChecked={props.sharing}
+                onClick={clickRadioHandler}
+              />
+              <label htmlFor="radioShare">
+                <input
+                  type="number"
+                  id="shareInput"
+                  placeholder="2"
+                  min="2"
+                  value={shareCount}
+                  onChange={(e) => setShareCount(e.target.value.trim())}
+                  className={props.sharing ? "active" : undefined}
+                  onClick={clickRadioHandler}
+                />
+              </label>
+            </div>
           </div>
         </div>
         <button className="btn-w100 btn-submit" onClick={submitFormHandler}>

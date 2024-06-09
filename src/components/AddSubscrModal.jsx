@@ -241,69 +241,77 @@ export default function Modal(props) {
         <div className="form-control">
           <label>무료 체험 (일)</label>
           <div className="options">
-            <input
-              type="radio"
-              name="free"
-              id="radioNotFree"
-              defaultChecked="true"
-              onClick={clickRadioHandler}
-              onFocus={() => setSearchTitleForm(false)}
-            />
-            <label htmlFor="radioNotFree">해당 없음</label>
-            <input
-              type="radio"
-              name="free"
-              id="radioFree"
-              onClick={clickRadioHandler}
-              onFocus={() => setSearchTitleForm(false)}
-            />
-            <label htmlFor="radioFree">
+            <div className="radio-wrap">
               <input
-                type="number"
-                id="freeInput"
-                placeholder="1"
-                min="1"
-                value={freePeriod}
-                onChange={(e) => setFreePeriod(e.target.value.trim())}
-                className={freePeriod ? "active" : undefined}
+                type="radio"
+                name="free"
+                id="radioNotFree"
+                defaultChecked="true"
                 onClick={clickRadioHandler}
                 onFocus={() => setSearchTitleForm(false)}
               />
-            </label>
+              <label htmlFor="radioNotFree">해당 없음</label>
+            </div>
+            <div className="radio-wrap">
+              <input
+                type="radio"
+                name="free"
+                id="radioFree"
+                onClick={clickRadioHandler}
+                onFocus={() => setSearchTitleForm(false)}
+              />
+              <label htmlFor="radioFree">
+                <input
+                  type="number"
+                  id="freeInput"
+                  placeholder="1"
+                  min="1"
+                  value={freePeriod}
+                  onChange={(e) => setFreePeriod(e.target.value.trim())}
+                  className={freePeriod ? "active" : undefined}
+                  onClick={clickRadioHandler}
+                  onFocus={() => setSearchTitleForm(false)}
+                />
+              </label>
+            </div>
           </div>
         </div>
         <div className="form-control">
           <label>계정 공유 (명)</label>
           <div className="options">
-            <input
-              type="radio"
-              name="sharing"
-              id="radioNotShare"
-              defaultChecked="true"
-              onClick={clickRadioHandler}
-              onFocus={() => setSearchTitleForm(false)}
-            />
-            <label htmlFor="radioNotShare">해당 없음</label>
-            <input
-              type="radio"
-              name="sharing"
-              id="radioShare"
-              onClick={clickRadioHandler}
-              onFocus={() => setSearchTitleForm(false)}
-            />
-            <label htmlFor="radioShare">
+            <div className="radio-wrap">
               <input
-                type="number"
-                id="shareInput"
-                placeholder="2"
-                min="2"
-                value={shareCount}
-                onChange={(e) => setShareCount(e.target.value.trim())}
-                className={shareCount ? "active" : undefined}
+                type="radio"
+                name="sharing"
+                id="radioNotShare"
+                defaultChecked="true"
                 onClick={clickRadioHandler}
                 onFocus={() => setSearchTitleForm(false)}
               />
-            </label>
+              <label htmlFor="radioNotShare">해당 없음</label>
+            </div>
+            <div className="radio-wrap">
+              <input
+                type="radio"
+                name="sharing"
+                id="radioShare"
+                onClick={clickRadioHandler}
+                onFocus={() => setSearchTitleForm(false)}
+              />
+              <label htmlFor="radioShare">
+                <input
+                  type="number"
+                  id="shareInput"
+                  placeholder="2"
+                  min="2"
+                  value={shareCount}
+                  onChange={(e) => setShareCount(e.target.value.trim())}
+                  className={shareCount ? "active" : undefined}
+                  onClick={clickRadioHandler}
+                  onFocus={() => setSearchTitleForm(false)}
+                />
+              </label>
+            </div>
           </div>
         </div>
         <button className="btn-w100 btn-submit" onClick={submitFormHandler}>
