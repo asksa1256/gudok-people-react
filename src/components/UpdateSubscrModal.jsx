@@ -40,19 +40,20 @@ export default function UpdateSubscrModal(props) {
   const [platformCancelLink, setPlatformCancelLink] = useState("");
   const [searchTitleForm, setSearchTitleForm] = useState(false);
 
-  const setExistingData = () => {
-    setTitle(props.title);
-    setPrice(props.price);
-    setPayDate(props.payDate);
-    if (props.free > 0) {
-      setFree(true);
-      setFreePeriod(props.free);
-    } else {
-      setFree(false);
-      setFreePeriod(0);
-    }
-    setShareCount(props.sharing);
-  };
+  // const setExistingData = () => {
+  //   setTitle(props.title);
+  //   setPrice(props.price);
+  //   setPayDate(props.payDate);
+  //   if (props.free > 0) {
+  //     setFree(true);
+  //     setFreePeriod(props.free);
+  //   } else {
+  //     setFree(false);
+  //     setFreePeriod(0);
+  //   }
+  //   setShareCount(props.sharing);
+  //   setPlatformImgUrl(props.imgUrl);
+  // };
 
   // 구독 플랫폼 정보 불러오기
   const fetchPlatformsData = () => {
@@ -77,7 +78,19 @@ export default function UpdateSubscrModal(props) {
 
   useEffect(() => {
     // 기존 데이터 불러오기
-    setExistingData();
+    // setExistingData();
+    setTitle(props.title);
+    setPrice(props.price);
+    setPayDate(props.payDate);
+    if (props.free > 0) {
+      setFree(true);
+      setFreePeriod(props.free);
+    } else {
+      setFree(false);
+      setFreePeriod(0);
+    }
+    setShareCount(props.sharing);
+    setPlatformImgUrl(props.imgUrl);
 
     // 모달 초기 설정
     setVisible(open);
@@ -93,7 +106,18 @@ export default function UpdateSubscrModal(props) {
     return () => {
       setVisible(false);
     };
-  }, [visible, open, setShare, setShareCount]);
+  }, [
+    visible,
+    open,
+    setShare,
+    setShareCount,
+    props.title,
+    props.price,
+    props.payDate,
+    props.free,
+    props.sharing,
+    props.imgUrl,
+  ]);
 
   if (!animate && !visible) return null;
 
@@ -106,9 +130,10 @@ export default function UpdateSubscrModal(props) {
     }
   });
 
-  const setPlatformInfo = (name, url) => {
+  const setPlatformInfo = (name, url, link) => {
     setTitle(name);
     setPlatformImgUrl(url);
+    setPlatformCancelLink(link);
     setSearchTitleForm(false);
   };
 
@@ -204,7 +229,11 @@ export default function UpdateSubscrModal(props) {
                 <li
                   key={platform.engName}
                   onClick={() =>
-                    setPlatformInfo(platform.name, platform.imgUrl)
+                    setPlatformInfo(
+                      platform.name,
+                      platform.imgUrl,
+                      platform.cancleLink
+                    )
                   }
                 >
                   <img src={platform.imgUrl} alt="" />

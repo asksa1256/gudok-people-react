@@ -231,7 +231,8 @@ export default function Modal(props) {
           <input
             type="date"
             id="subscription-date"
-            placeholder="2024-01-01"
+            // placeholder="2024-01-01"
+            style={{ textAlign: "left" }}
             value={payDate}
             onChange={(e) => setPayDate(e.target.value.trim())}
             onFocus={() => setSearchTitleForm(false)}

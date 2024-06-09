@@ -205,9 +205,15 @@ section {
   input[type="radio"] {
     width: 20px;
     height: 20px;
+    @media (max-width: 430px) {
+      margin-right: 10px;
+    }
 
     &:not(:first-child) {
       margin-left: 50px;
+      @media (max-width: 430px) {
+        margin-left: 0;
+      }
     }
   }
 
@@ -250,29 +256,29 @@ section {
   .options {
     display: flex;
     align-items: center;
-    // @media (max-width: 430px) {
-    //   flex-wrap: wrap;
-    // }
+    @media (max-width: 430px) {
+      flex-wrap: wrap;
+    }
 
     input[type="radio"] {
-      // @media (max-width: 430px) {
-      //   margin-bottom: 16px;
-      // }
+      @media (max-width: 430px) {
+        margin-bottom: 16px;
+      }
     }
 
     label {
       margin-bottom: 0;
-      // @media (max-width: 430px) {
-      //   width: calc(100% - 32px);
-      //   margin-bottom: 16px;
-      // }
+      @media (max-width: 430px) {
+        width: calc(100% - 32px);
+        margin-bottom: 16px;
+      }
     }
 
     * + * {
       margin-left: 8px;
-      // @media (max-width: 430px) {
-      //   margin-left: 0;
-      // }
+      @media (max-width: 430px) {
+        margin-left: 0;
+      }
     }
 
     .btn-w50 {
@@ -358,7 +364,7 @@ section {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 
     .box-title {
       font-size: 18px;

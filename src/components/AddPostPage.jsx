@@ -64,12 +64,7 @@ export default function AddPostPage() {
   };
 
   const cancelAddPostHandler = () => {
-    const checkCancel = window.confirm("작성을 취소하시겠습니까?");
-    if (checkCancel) {
-      navigate("/community");
-    } else {
-      return;
-    }
+    navigate("/community");
   };
 
   return (

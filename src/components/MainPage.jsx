@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 import "firebase/compat/auth";
 import { getAuth } from "firebase/auth";
 import { getMessaging, getToken } from "firebase/messaging";
 import "firebase/compat/messaging";
-import { AppContext } from "../App";
 import "./MainPage.scss";
 import SubscriptionItem from "./SubscriptionItem";
 import AddSubscrModal from "./AddSubscrModal";
@@ -35,7 +34,6 @@ export default function MainPage() {
   const [currentUser, setCurrentUser] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
   const [targetData, setTargetData] = useState({});
-  const deviceToken = useContext(AppContext);
 
   // 구독 정보 불러오기
   const fetchData = () => {
@@ -246,6 +244,7 @@ export default function MainPage() {
           payDate={targetData.payDate}
           free={targetData.free}
           sharing={targetData.sharing}
+          imgUrl={targetData.imgUrl}
         />
         <div className="contents">
           <div className="nav-top"></div>
