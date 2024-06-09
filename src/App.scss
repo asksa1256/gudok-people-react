@@ -188,6 +188,7 @@ section {
       padding-right: 14px;
       appearance: none;
       -webkit-appearance: none;
+      background: #fff;
     }
     &[type="number"] {
       padding-right: 0;
@@ -205,6 +206,8 @@ section {
   input[type="radio"] {
     width: 20px;
     height: 20px;
+    max-width: 20px;
+    flex-grow: 0;
     @media (max-width: 430px) {
       margin-right: 10px;
     }
