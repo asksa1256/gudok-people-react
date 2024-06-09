@@ -7,7 +7,6 @@ body {
 
 section {
   position: relative;
-  /* 모바일 크기로 설정 */
   width: 392px;
   height: 100vh;
   max-height: 852px;
@@ -165,7 +164,7 @@ section {
 .form-control {
   position: relative;
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 
   label {
     display: block;
@@ -187,9 +186,14 @@ section {
     }
     &[type="date"] {
       padding-right: 14px;
+      appearance: none;
+      -webkit-appearance: none;
     }
     &[type="number"] {
-      padding-right: 14px;
+      padding-right: 0;
+      @media (max-width: 430px) {
+        padding-right: 14px;
+      }
     }
     &.active {
       background: #ae6cdc;
@@ -201,6 +205,10 @@ section {
   input[type="radio"] {
     width: 20px;
     height: 20px;
+
+    &:not(:first-child) {
+      margin-left: 50px;
+    }
   }
 
   input[type="number"] {
@@ -242,30 +250,29 @@ section {
   .options {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    @media (max-width: 430px) {
-      flex-wrap: wrap;
-    }
+    // @media (max-width: 430px) {
+    //   flex-wrap: wrap;
+    // }
 
     input[type="radio"] {
-      @media (max-width: 430px) {
-        margin-bottom: 16px;
-      }
+      // @media (max-width: 430px) {
+      //   margin-bottom: 16px;
+      // }
     }
 
     label {
       margin-bottom: 0;
-      @media (max-width: 430px) {
-        width: calc(100% - 32px);
-        margin-bottom: 16px;
-      }
+      // @media (max-width: 430px) {
+      //   width: calc(100% - 32px);
+      //   margin-bottom: 16px;
+      // }
     }
 
     * + * {
       margin-left: 8px;
-      @media (max-width: 430px) {
-        margin-left: 0;
-      }
+      // @media (max-width: 430px) {
+      //   margin-left: 0;
+      // }
     }
 
     .btn-w50 {

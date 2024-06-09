@@ -192,6 +192,7 @@ export default function Modal(props) {
             onFocus={() => setSearchTitleForm(true)}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="쿠팡와우, 넷플릭스, 멜론, ..."
+            autoComplete="off"
           />
           {searchTitleForm && (
             <ul className="filtered-platforms">

@@ -300,7 +300,7 @@ export default function UpdateSubscrModal(props) {
           </div>
         </div>
         <button className="btn-w100 btn-submit" onClick={submitFormHandler}>
-          추가하기
+          수정하기
         </button>
       </div>
     </>
