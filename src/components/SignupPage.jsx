@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { AppContext } from "../App";
 import { Link, useNavigate } from "react-router-dom";
 import "./SignupPage.scss";
@@ -40,9 +40,6 @@ export default function SignupPage() {
   async function submitSignupHandler(event) {
     event.preventDefault();
 
-    password.length < 6 ? setPasswordValid(false) : setPasswordValid(true);
-    passChk !== password ? setPassChkValid(false) : setPassChkValid(true);
-
     if (!passChkValid) return;
     try {
       await createUserWithEmailAndPassword(auth, email, password);
@@ -62,9 +59,7 @@ export default function SignupPage() {
 
       // 메인으로 이동
       navigate("/main");
-      alert(
-        "회원가입이 완료되었습니다. 확인을 누르면 메인 페이지로 이동합니다."
-      );
+      alert("회원가입 되었습니다. 메인 페이지로 이동합니다.");
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         setEmailUnique(false);
@@ -94,6 +89,11 @@ export default function SignupPage() {
       }
     }
   }
+
+  useEffect(() => {
+    password.length < 6 ? setPasswordValid(false) : setPasswordValid(true);
+    passChk !== password ? setPassChkValid(false) : setPassChkValid(true);
+  }, [passChk, passChkValid, password, setPassChkValid]);
 
   return (
     <div className="align-center">
