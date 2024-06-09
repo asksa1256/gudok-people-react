@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 import "firebase/compat/auth";
 import { getAuth } from "firebase/auth";
 import { getMessaging, getToken } from "firebase/messaging";
 import "firebase/compat/messaging";
+import { AppContext } from "../App";
 import "./MainPage.scss";
 import SubscriptionItem from "./SubscriptionItem";
 import AddSubscrModal from "./AddSubscrModal";
@@ -34,6 +35,7 @@ export default function MainPage() {
   const [currentUser, setCurrentUser] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
   const [targetData, setTargetData] = useState({});
+  const deviceToken = useContext(AppContext);
 
   // 구독 정보 불러오기
   const fetchData = () => {
@@ -44,8 +46,8 @@ export default function MainPage() {
           .collection("user")
           .where("email", "==", user.email)
           .get();
-        const doc = snapshot.docs[0]; // 해당 계정의 docId값
-        setDocId(doc.id);
+        const doc = snapshot.docs[0];
+        setDocId(doc.id); // 해당 계정의 docId값
         const docRef = firestore.collection("user").doc(doc.id);
 
         // 'users' 하위 컬렉션 'subscriptions'의 모든 데이터 조회
@@ -61,14 +63,13 @@ export default function MainPage() {
             });
           });
 
-        // 로그인 할 때마다 토큰 갱신 처리
+        // 토큰 만료 대비 갱신
         getToken(messaging, {
           vapidKey:
             "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
         })
           .then((refreshedToken) => {
             try {
-              // 서버에 있던 기존 토큰 갱신
               docRef.update({
                 token: refreshedToken,
               });

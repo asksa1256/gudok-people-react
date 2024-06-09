@@ -14,7 +14,6 @@ import SettingsPage from "./components/SettingsPage";
 import AddPostPage from "./components/AddPostPage";
 import EditPostPage from "./components/EditPostPage";
 import PostDetailPage from "./components/PostDetailPage";
-// import isIphone from "./isIphone";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -55,15 +54,13 @@ function App() {
 
   useEffect(() => {
     if (isSupported()) {
-      // FCM(파이어베이스 클라우드 메시징)이 지원되지 않는 브라우저에서는 화면이 하얗게 뜨는 현상 방지
-      // if (isIphone()) return;
       getToken(messaging, {
         vapidKey:
           "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
       })
         .then((currentToken) => {
           if (currentToken) {
-            // console.log(currentToken);
+            console.log(currentToken);
             setDeviceToken(currentToken);
           } else {
             requestPermission();
