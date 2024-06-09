@@ -99,12 +99,10 @@ export default function SignupPage() {
     <div className="align-center">
       <section className="SignupPage">
         <div className="contents">
-          <nav className="nav-top">
-            <Link to="/" className="nav-link">
-              <img src="/images/arrow-back.png" alt="" />
-              로그인
-            </Link>
-          </nav>
+          <Link to="/" className="nav-link">
+            <img src="/images/arrow-back.png" alt="" />
+            로그인
+          </Link>
           <div className="form-area">
             <figure className="logo">
               <img src="/images/logo.svg" alt="구독의 민족" />
