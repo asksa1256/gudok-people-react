@@ -6,7 +6,6 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  updateEmail,
 } from "firebase/auth";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
@@ -30,12 +29,10 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passChk, setPassChk] = useState("");
-  const [nickname, setNickname] = useState("");
   const [emailUnique, setEmailUnique] = useState(true);
   const [emailValid, setEmailValid] = useState(true);
   const [passwordValid, setPasswordValid] = useState(true);
   const [passChkValid, setPassChkValid] = useState(true);
-  const [nicknameValid, setNicknameValid] = useState(true);
   const deviceToken = useContext(AppContext);
   const navigate = useNavigate();
 
@@ -43,17 +40,12 @@ export default function SignupPage() {
   async function submitSignupHandler(event) {
     event.preventDefault();
 
-    nickname.length === 0 ? setNicknameValid(false) : setNicknameValid(true);
     password.length < 6 ? setPasswordValid(false) : setPasswordValid(true);
     passChk !== password ? setPassChkValid(false) : setPassChkValid(true);
 
+    if (!passChkValid) return;
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      console.log(userCredential);
+      await createUserWithEmailAndPassword(auth, email, password);
 
       // email, device token값 포함해서 firestore에도 회원정보 저장하기
       db.collection("user")
@@ -135,9 +127,6 @@ export default function SignupPage() {
               {!emailValid && (
                 <span className="text-invalid">잘못된 이메일 형식입니다.</span>
               )}
-              {/* <button className="btn-sm btn-gray" onClick={checkDuplicate}>
-                중복확인
-              </button> */}
             </div>
             <div className="form-control">
               <label htmlFor="password">비밀번호</label>
@@ -153,11 +142,6 @@ export default function SignupPage() {
               <span className={passwordValid ? "text-sub" : "text-invalid"}>
                 최소 6자 이상 입력해주세요.
               </span>
-              {/* {!passwordValid && (
-                <span className="text-invalid">
-                  비밀번호는 최소 6자 이상 입력해주세요.
-                </span>
-              )} */}
             </div>
             <div className="form-control">
               <label htmlFor="confirm-password">비밀번호 확인</label>
@@ -175,21 +159,6 @@ export default function SignupPage() {
                 </span>
               )}
             </div>
-            {/* <div className="form-control">
-              <label htmlFor="nickname">닉네임</label>
-              <input
-                type="text"
-                id="nickname"
-                placeholder="닉네임"
-                required
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value.trim())}
-                className={!nicknameValid ? "invalid" : ""}
-              />
-              {!nicknameValid && (
-                <span className="text-invalid">닉네임을 입력해주세요.</span>
-              )}
-            </div> */}
             <div className="actions">
               <button id="signUpButton" onClick={submitSignupHandler}>
                 회원가입
