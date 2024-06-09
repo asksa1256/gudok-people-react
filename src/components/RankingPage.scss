@@ -40,10 +40,15 @@
   height: calc(100vh - 274px);
   max-height: 560px;
   overflow-y: auto;
+  overflow-x: hidden;
 
   li {
     position: relative;
     display: flex;
+
+    &:last-child > div {
+      border: none;
+    }
 
     + li {
       margin-top: 18px;
@@ -69,12 +74,22 @@
         .title {
           margin-left: 10px;
           font-size: 18px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          width: 50%;
+          display: inline-block;
+          vertical-align: bottom;
         }
 
         .desc {
-          margin-top: 4px;
+          margin-top: 8px;
           font-size: 14px;
           color: #6b6b6b;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          width: 95%;
+          overflow: hidden;
         }
       }
     }
