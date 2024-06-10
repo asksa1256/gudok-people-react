@@ -201,6 +201,9 @@ export default function UpdateSubscrModal(props) {
 
     // MainPage로 데이터 전달
     props.updateData(newData);
+
+    // 모달 닫기
+    props.close();
   };
 
   return (

@@ -171,6 +171,9 @@ export default function Modal(props) {
     const radioNotShare = document.querySelector("#radioNotShare");
     radioNotFree.checked = "true";
     radioNotShare.checked = "true";
+
+    // 모달 닫기
+    props.close();
   };
 
   return (
