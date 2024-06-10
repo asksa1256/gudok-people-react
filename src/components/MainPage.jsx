@@ -154,59 +154,55 @@ export default function MainPage() {
 
   // 구독 해지
   const deleteItemHandler = (targetData) => {
-    const deleteConfirm = window.confirm(
-      "구독 해지 링크로 이동합니다. 잠시만 기다려주세요."
-    );
+    const deleteConfirm = window.confirm("구독 해지 링크로 이동합니다.");
     if (!deleteConfirm) return;
 
     if (targetData.cancelLink) {
       // 구독 해지 링크로 이동
-      setTimeout(() => {
-        window.open(`${targetData.cancelLink}`);
-      }, 1000);
+      window.open(`${targetData.cancelLink}`);
     } else {
-      alert("연결된 해지 링크가 없습니다. 별도로 구독을 해지해주세요.");
+      alert(
+        "연결된 해지 링크가 없습니다. 별도로 구독을 해지한 후 새 알림창에서 '확인'을 눌러주세요."
+      );
     }
 
-    setTimeout(() => {
-      const cancelSubscriptionConfirm = window.confirm(
-        "구독을 해지하셨으면 '확인'을 눌러주세요."
-      );
-      if (!cancelSubscriptionConfirm) return;
+    const cancelSubscriptionConfirm = window.confirm(
+      "구독을 해지하셨으면 '확인'을 눌러주세요."
+    );
+    if (!cancelSubscriptionConfirm) return;
 
-      // db에서 구독 정보 삭제
-      try {
-        const targetId = targetData.id;
-        const docRef = firestore.collection("user").doc(docId);
+    // db에서 구독 정보 삭제
+    try {
+      const targetId = targetData.id;
+      const docRef = firestore.collection("user").doc(docId);
 
-        docRef
-          .collection("subscriptions")
-          .get()
-          .then((querySnapshot) => {
-            let totalPrice = 0;
-            docRef
-              .collection("subscriptions")
-              .doc(targetId)
-              .delete()
-              .then(() => {
-                // console.log("Document successfully updated!");
-              })
-              .catch((error) => {
-                console.error("Error updating document: ", error);
-              });
-
-            // 총 구독료 갱신
-            querySnapshot.forEach((doc) => {
-              totalPrice += doc.data().price;
-              setTotalPrice(totalPrice);
+      docRef
+        .collection("subscriptions")
+        .get()
+        .then((querySnapshot) => {
+          let totalPrice = 0;
+          docRef
+            .collection("subscriptions")
+            .doc(targetId)
+            .delete()
+            .then(() => {
+              // console.log("Document successfully updated!");
+            })
+            .catch((error) => {
+              console.error("Error updating document: ", error);
             });
+
+          // 총 구독료 갱신
+          querySnapshot.forEach((doc) => {
+            totalPrice += doc.data().price;
+            setTotalPrice(totalPrice);
           });
-        alert("삭제되었습니다.");
-        fetchData();
-      } catch (error) {
-        console.error("컬렉션 삭제 중 오류 발생:", error);
-      }
-    }, 2000);
+        });
+      alert("삭제되었습니다.");
+      fetchData();
+    } catch (error) {
+      console.error("컬렉션 삭제 중 오류 발생:", error);
+    }
   };
 
   const showAddSubscrModal = () => {
@@ -275,15 +271,7 @@ export default function MainPage() {
             }}
           >
             <div className="box-title-wrap">
-              <h5 className="box-title">
-                내 구독 리스트
-                <img
-                  className="refresh-btn"
-                  src="/images/refresh.png"
-                  alt="새로고침"
-                  onClick={fetchData}
-                />
-              </h5>
+              <h5 className="box-title">내 구독 리스트</h5>
               <button
                 type="button"
                 className="text-btn text-btn-primary"
