@@ -159,15 +159,11 @@ export default function MainPage() {
 
     if (targetData.cancelLink) {
       // 구독 해지 링크로 이동
-      // window.open(`${targetData.cancelLink}`);
-      const result = window.open(`${targetData.cancelLink}`);
-      if (result === null || result === undefined) {
-        alert("팝업 차단을 허용해주시기 바랍니다.");
-      }
+      setTimeout(() => {
+        window.open(`${targetData.cancelLink}`);
+      }, 2000);
     } else {
-      alert(
-        "연결된 해지 링크가 없습니다. 별도로 구독을 해지한 후 새 알림창에서 '확인'을 눌러주세요."
-      );
+      alert("연결된 해지 링크가 없습니다. 별도로 구독을 해지해주세요.");
     }
 
     const cancelSubscriptionConfirm = window.confirm(
