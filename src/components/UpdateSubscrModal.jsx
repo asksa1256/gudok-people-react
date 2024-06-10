@@ -40,20 +40,19 @@ export default function UpdateSubscrModal(props) {
   const [platformCancelLink, setPlatformCancelLink] = useState("");
   const [searchTitleForm, setSearchTitleForm] = useState(false);
 
-  // const setExistingData = () => {
-  //   setTitle(props.title);
-  //   setPrice(props.price);
-  //   setPayDate(props.payDate);
-  //   if (props.free > 0) {
-  //     setFree(true);
-  //     setFreePeriod(props.free);
-  //   } else {
-  //     setFree(false);
-  //     setFreePeriod(0);
-  //   }
-  //   setShareCount(props.sharing);
-  //   setPlatformImgUrl(props.imgUrl);
-  // };
+  const setExistingData = () => {
+    setTitle(props.title);
+    setPrice(props.price);
+    setPayDate(props.payDate);
+    if (props.free > 0) {
+      setFree(true);
+      setFreePeriod(props.free);
+    } else {
+      setFree(false);
+      setFreePeriod(0);
+    }
+    setShareCount(props.sharing);
+  };
 
   // 구독 플랫폼 정보 불러오기
   const fetchPlatformsData = () => {
@@ -90,7 +89,6 @@ export default function UpdateSubscrModal(props) {
       setFreePeriod(0);
     }
     setShareCount(props.sharing);
-    setPlatformImgUrl(props.imgUrl);
 
     // 모달 초기 설정
     setVisible(open);
@@ -116,7 +114,6 @@ export default function UpdateSubscrModal(props) {
     props.payDate,
     props.free,
     props.sharing,
-    props.imgUrl,
   ]);
 
   if (!animate && !visible) return null;
