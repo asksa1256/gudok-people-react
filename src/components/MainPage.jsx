@@ -164,47 +164,49 @@ export default function MainPage() {
       }, 1000);
     } else {
       alert(
-        "연결된 해지 링크가 없습니다. 별도로 구독을 해지한 후 새 알림창에서 '확인'을 눌러주세요."
+        "연결된 해지 링크가 없습니다. 별도로 구독을 해지한 후 돌아와서 '확인'을 눌러주세요."
       );
     }
 
-    const cancelSubscriptionConfirm = window.confirm(
-      "구독을 해지하셨으면 '확인'을 눌러주세요."
-    );
-    if (!cancelSubscriptionConfirm) return;
+    setTimeout(() => {
+      const cancelSubscriptionConfirm = window.confirm(
+        "구독을 해지하셨으면 '확인'을 눌러주세요."
+      );
+      if (!cancelSubscriptionConfirm) return;
 
-    // db에서 구독 정보 삭제
-    try {
-      const targetId = targetData.id;
-      const docRef = firestore.collection("user").doc(docId);
+      // db에서 구독 정보 삭제
+      try {
+        const targetId = targetData.id;
+        const docRef = firestore.collection("user").doc(docId);
 
-      docRef
-        .collection("subscriptions")
-        .get()
-        .then((querySnapshot) => {
-          let totalPrice = 0;
-          docRef
-            .collection("subscriptions")
-            .doc(targetId)
-            .delete()
-            .then(() => {
-              // console.log("Document successfully updated!");
-            })
-            .catch((error) => {
-              console.error("Error updating document: ", error);
+        docRef
+          .collection("subscriptions")
+          .get()
+          .then((querySnapshot) => {
+            let totalPrice = 0;
+            docRef
+              .collection("subscriptions")
+              .doc(targetId)
+              .delete()
+              .then(() => {
+                // console.log("Document successfully updated!");
+              })
+              .catch((error) => {
+                console.error("Error updating document: ", error);
+              });
+
+            // 총 구독료 갱신
+            querySnapshot.forEach((doc) => {
+              totalPrice += doc.data().price;
+              setTotalPrice(totalPrice);
             });
-
-          // 총 구독료 갱신
-          querySnapshot.forEach((doc) => {
-            totalPrice += doc.data().price;
-            setTotalPrice(totalPrice);
           });
-        });
-      alert("삭제되었습니다.");
-      fetchData();
-    } catch (error) {
-      console.error("컬렉션 삭제 중 오류 발생:", error);
-    }
+        alert("삭제되었습니다.");
+        fetchData();
+      } catch (error) {
+        console.error("컬렉션 삭제 중 오류 발생:", error);
+      }
+    }, 2000);
   };
 
   const showAddSubscrModal = () => {
