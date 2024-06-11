@@ -107,6 +107,9 @@ export default function MainPage() {
         .add(newData); // 새로 추가할 데이터
       alert("추가되었습니다.");
 
+      // 모달 닫기
+      setShowModal(false);
+
       // 추가 후 리스트 새로고침
       fetchData();
     } catch (error) {
@@ -144,6 +147,9 @@ export default function MainPage() {
         });
 
       alert("수정되었습니다.");
+
+      // 모달 닫기
+      setShowModal(false);
 
       // 수정 후 리스트 새로고침
       fetchData();
