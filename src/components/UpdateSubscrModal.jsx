@@ -3,6 +3,7 @@ import { AppContext } from "../App";
 import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 import "firebase/compat/auth";
+import { getMessaging, getToken } from "firebase/messaging";
 import "./AddSubscrModal.scss";
 import "./Modal.scss";
 import "../App.scss";
@@ -24,6 +25,8 @@ if (!firebase.apps.length) {
 }
 
 const db = firebase.firestore();
+const messaging = getMessaging();
+const firestore = firebase.firestore();
 
 export default function UpdateSubscrModal(props) {
   const { open, close, modalTitle } = props; // 모달 동작 관련
@@ -34,25 +37,12 @@ export default function UpdateSubscrModal(props) {
   const [shareCount, setShareCount] = useState(0);
   const [free, setFree] = useState(false);
   const [share, setShare] = useState(false);
+  const [refreshedToken, setRefreshedToken] = useState("");
   const deviceToken = useContext(AppContext);
   const [platformImgUrl, setPlatformImgUrl] = useState("");
   const [platforms, setPlatforms] = useState("");
   const [platformCancelLink, setPlatformCancelLink] = useState("");
   const [searchTitleForm, setSearchTitleForm] = useState(false);
-
-  const setExistingData = () => {
-    setTitle(props.title);
-    setPrice(props.price);
-    setPayDate(props.payDate);
-    if (props.free > 0) {
-      setFree(true);
-      setFreePeriod(props.free);
-    } else {
-      setFree(false);
-      setFreePeriod(0);
-    }
-    setShareCount(props.sharing);
-  };
 
   // 구독 플랫폼 정보 불러오기
   const fetchPlatformsData = () => {
@@ -77,7 +67,6 @@ export default function UpdateSubscrModal(props) {
 
   useEffect(() => {
     // 기존 데이터 불러오기
-    // setExistingData();
     setTitle(props.title);
     setPrice(props.price);
     setPayDate(props.payDate);
@@ -89,6 +78,37 @@ export default function UpdateSubscrModal(props) {
       setFreePeriod(0);
     }
     setShareCount(props.sharing);
+
+    // 토큰 작업
+    firebase.auth().onAuthStateChanged(async (user) => {
+      if (!user) return;
+      const snapshot = await db
+        .collection("user")
+        .where("email", "==", user.email)
+        .get();
+      const doc = snapshot.docs[0];
+      const docRef = firestore.collection("user").doc(doc.id);
+
+      if (!deviceToken) {
+        getToken(messaging, {
+          vapidKey:
+            "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
+        })
+          .then((token) => {
+            setRefreshedToken(token);
+            try {
+              docRef.update({
+                token: token,
+              });
+            } catch (error) {
+              console.error("Error updating document field: ", error);
+            }
+          })
+          .catch((error) => {
+            console.error("FCM 토큰 갱신 중 오류 발생:", error);
+          });
+      }
+    });
 
     // 모달 초기 설정
     setVisible(open);
@@ -114,6 +134,7 @@ export default function UpdateSubscrModal(props) {
     props.payDate,
     props.free,
     props.sharing,
+    deviceToken,
   ]);
 
   if (!animate && !visible) return null;
@@ -191,7 +212,7 @@ export default function UpdateSubscrModal(props) {
       free: freePeriod * 1,
       sharing: shareCount * 1,
       imgUrl: platformImgUrl,
-      token: deviceToken,
+      token: deviceToken.length > 0 ? deviceToken : refreshedToken,
       cancelLink: platformCancelLink,
       addDate: addDate,
     };

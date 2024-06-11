@@ -3,6 +3,7 @@ import { AppContext } from "../App";
 import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 import "firebase/compat/auth";
+import { getMessaging, getToken } from "firebase/messaging";
 import "./AddSubscrModal.scss";
 import "./Modal.scss";
 import "../App.scss";
@@ -25,6 +26,8 @@ if (!firebase.apps.length) {
 }
 
 const db = firebase.firestore();
+const messaging = getMessaging();
+const firestore = firebase.firestore();
 
 export default function Modal(props) {
   const { open, close, modalTitle } = props; // 모달 동작 관련
@@ -36,6 +39,7 @@ export default function Modal(props) {
   const [free, setFree] = useState(false);
   const [share, setShare] = useState(false);
   const deviceToken = useContext(AppContext);
+  const [refreshedToken, setRefreshedToken] = useState("");
   const [platformImgUrl, setPlatformImgUrl] = useState("");
   const [platforms, setPlatforms] = useState("");
   const [platformCancelLink, setPlatformCancelLink] = useState("");
@@ -63,6 +67,37 @@ export default function Modal(props) {
   const [visible, setVisible] = useState(open);
 
   useEffect(() => {
+    // 토큰 작업
+    firebase.auth().onAuthStateChanged(async (user) => {
+      if (!user) return;
+      const snapshot = await db
+        .collection("user")
+        .where("email", "==", user.email)
+        .get();
+      const doc = snapshot.docs[0];
+      const docRef = firestore.collection("user").doc(doc.id);
+
+      if (!deviceToken) {
+        getToken(messaging, {
+          vapidKey:
+            "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
+        })
+          .then((token) => {
+            setRefreshedToken(token);
+            try {
+              docRef.update({
+                token: token,
+              });
+            } catch (error) {
+              console.error("Error updating document field: ", error);
+            }
+          })
+          .catch((error) => {
+            console.error("FCM 토큰 갱신 중 오류 발생:", error);
+          });
+      }
+    });
+
     setVisible(open);
 
     // open 값이 true -> false 가 되는 것을 감지 (즉, 모달창을 닫을 때)
@@ -75,7 +110,7 @@ export default function Modal(props) {
     return () => {
       setVisible(false);
     };
-  }, [visible, open]);
+  }, [visible, open, deviceToken]);
 
   if (!animate && !visible) return null;
 
@@ -151,7 +186,7 @@ export default function Modal(props) {
       free: !free ? 0 : freePeriod * 1,
       sharing: !share ? 0 : shareCount * 1,
       imgUrl: platformImgUrl,
-      token: deviceToken,
+      token: deviceToken.length > 0 ? deviceToken : refreshedToken,
       cancelLink: platformCancelLink,
       addDate: addDate,
     };

@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 import "firebase/compat/auth";
 import { getAuth } from "firebase/auth";
 import { getMessaging, getToken } from "firebase/messaging";
 import "firebase/compat/messaging";
+import { AppContext } from "../App";
 import "./MainPage.scss";
 import SubscriptionItem from "./SubscriptionItem";
 import AddSubscrModal from "./AddSubscrModal";
@@ -34,6 +35,7 @@ export default function MainPage() {
   const [currentUser, setCurrentUser] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
   const [targetData, setTargetData] = useState({});
+  const deviceToken = useContext(AppContext);
 
   // 구독 정보 불러오기
   const fetchData = () => {
@@ -62,22 +64,28 @@ export default function MainPage() {
           });
 
         // 토큰 만료 대비 갱신
-        getToken(messaging, {
-          vapidKey:
-            "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
-        })
-          .then((refreshedToken) => {
-            try {
-              docRef.update({
-                token: refreshedToken,
-              });
-            } catch (error) {
-              console.error("Error updating document field: ", error);
-            }
-          })
-          .catch((error) => {
-            console.error("FCM 토큰 갱신 중 오류 발생:", error);
+        if (deviceToken) {
+          docRef.update({
+            token: deviceToken,
           });
+        } else {
+          getToken(messaging, {
+            vapidKey:
+              "BK7Jyd1qE2DWQAygv_E6oHlyvFVJ1be_gtzZ2vRaCTb0oO_o6E5TgSBQSNQJC37AcHFygzDEEXrvuBIm-BiUnNA",
+          })
+            .then((token) => {
+              try {
+                docRef.update({
+                  token: token,
+                });
+              } catch (error) {
+                console.error("Error updating document field: ", error);
+              }
+            })
+            .catch((error) => {
+              console.error("FCM 토큰 갱신 중 오류 발생:", error);
+            });
+        }
 
         // 구독 정보 조회
         const subCollectionSnapshot = await db
@@ -104,7 +112,7 @@ export default function MainPage() {
         .collection("user")
         .doc(docId)
         .collection("subscriptions")
-        .add(newData); // 새로 추가할 데이터
+        .add(newData);
       alert("추가되었습니다.");
 
       // 모달 닫기
